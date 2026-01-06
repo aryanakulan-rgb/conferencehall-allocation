@@ -21,13 +21,13 @@ export function HallCard({ hall, onBook, showBookButton = true }: HallCardProps)
   return (
     <div className={cn(
       "group rounded-xl border bg-card p-6 shadow-soft transition-all duration-300 hover:shadow-card",
-      !hall.isActive && "opacity-60"
+      !hall.is_active && "opacity-60"
     )}>
       <div className="flex items-start justify-between mb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-lg text-foreground">{hall.name}</h3>
-            {!hall.isActive && (
+            {!hall.is_active && (
               <Badge variant="secondary" className="text-xs">Inactive</Badge>
             )}
           </div>
@@ -70,7 +70,7 @@ export function HallCard({ hall, onBook, showBookButton = true }: HallCardProps)
         )}
       </div>
 
-      {showBookButton && hall.isActive && (
+      {showBookButton && hall.is_active && (
         <Button 
           variant="accent" 
           className="w-full"

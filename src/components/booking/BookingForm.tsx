@@ -17,6 +17,7 @@ interface BookingFormProps {
   selectedHall?: Hall;
   onSubmit: (data: BookingFormData) => void;
   onCancel: () => void;
+  isSubmitting?: boolean;
 }
 
 export interface BookingFormData {
@@ -33,7 +34,7 @@ const timeSlots = [
   '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
 ];
 
-export function BookingForm({ halls, selectedHall, onSubmit, onCancel }: BookingFormProps) {
+export function BookingForm({ halls, selectedHall, onSubmit, onCancel, isSubmitting: externalIsSubmitting }: BookingFormProps) {
   const [hallId, setHallId] = useState(selectedHall?.id || '');
   const [date, setDate] = useState<Date>();
   const [startTime, setStartTime] = useState('');
@@ -41,7 +42,8 @@ export function BookingForm({ halls, selectedHall, onSubmit, onCancel }: Booking
   const [purpose, setPurpose] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const activeHalls = halls.filter(h => h.isActive);
+  const activeHalls = halls.filter(h => h.is_active);
+  const isPending = externalIsSubmitting ?? isSubmitting;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,9 +167,9 @@ export function BookingForm({ halls, selectedHall, onSubmit, onCancel }: Booking
         <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" variant="accent" className="flex-1" disabled={isSubmitting}>
+        <Button type="submit" variant="accent" className="flex-1" disabled={isPending}>
           <Send className="mr-2 h-4 w-4" />
-          {isSubmitting ? 'Submitting...' : 'Submit Request'}
+          {isPending ? 'Submitting...' : 'Submit Request'}
         </Button>
       </div>
     </form>

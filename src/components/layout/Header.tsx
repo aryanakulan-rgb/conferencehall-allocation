@@ -33,7 +33,7 @@ export function Header() {
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground">{user.name}</p>
-                <p className="text-xs text-muted-foreground capitalize">{user.role} • {user.section}</p>
+                <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
               </div>
             </div>
             <Button variant="ghost" size="sm" onClick={handleLogout}>

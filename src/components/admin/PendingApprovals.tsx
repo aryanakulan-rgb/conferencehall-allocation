@@ -97,7 +97,7 @@ export function PendingApprovals({ bookings, halls, onApprove, onReject }: Pendi
               <div className="grid grid-cols-3 gap-3 mb-4 text-sm">
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <MapPin className="h-4 w-4" />
-                  <span className="truncate">{getHallName(booking.hallId)}</span>
+                  <span className="truncate">{getHallName(booking.hall_id)}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Calendar className="h-4 w-4" />
@@ -105,7 +105,7 @@ export function PendingApprovals({ bookings, halls, onApprove, onReject }: Pendi
                 </div>
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Clock className="h-4 w-4" />
-                  {booking.startTime} - {booking.endTime}
+                  {booking.start_time} - {booking.end_time}
                 </div>
               </div>
 
