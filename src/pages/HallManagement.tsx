@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Building, Plus, Search, MoreHorizontal, Pencil, Users } from 'lucide-react';
-import { BackButton } from '@/components/navigation/BackButton';
+import { AdminTopBar } from '@/components/navigation/AdminTopBar';
 
 export default function HallManagement() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,7 +87,7 @@ export default function HallManagement() {
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
-        <BackButton className="mb-4" />
+        <AdminTopBar />
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

@@ -11,15 +11,16 @@ import { useHalls } from '@/hooks/useHalls';
 import { useBookings, useUserBookings, useUpdateBookingStatus, useCancelBooking, useUpdateBooking, Booking } from '@/hooks/useBookings';
 import { useProfiles } from '@/hooks/useProfiles';
 import { useSections } from '@/hooks/useSections';
-import { Calendar, CheckCircle, Clock, XCircle, LogOut } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BackButton } from '@/components/navigation/BackButton';
+import { AdminTopBar } from '@/components/navigation/AdminTopBar';
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -82,11 +83,6 @@ export default function Dashboard() {
     });
   };
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/auth', { replace: true });
-  };
-
   if (isLoading) {
     return (
       <DashboardLayout>
@@ -110,7 +106,11 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in">
-        <BackButton className="mb-4" />
+        {isAdmin ? (
+          <AdminTopBar />
+        ) : (
+          <BackButton className="mb-4" />
+        )}
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -121,12 +121,7 @@ export default function Dashboard() {
               Welcome back, {user?.name}. {isAdmin ? 'Manage bookings and halls.' : 'View and manage your bookings.'}
             </p>
           </div>
-          {isAdmin ? (
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          ) : (
+          {!isAdmin && (
             <Button variant="accent" onClick={() => navigate('/halls')}>
               <Calendar className="mr-2 h-4 w-4" />
               Book a Hall
