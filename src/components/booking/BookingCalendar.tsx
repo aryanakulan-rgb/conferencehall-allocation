@@ -82,11 +82,11 @@ export function BookingCalendar({ bookings, halls }: BookingCalendarProps) {
                   <div className="space-y-1 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1.5">
                       <MapPin className="h-3 w-3" />
-                      {getHallName(booking.hallId)}
+                      {getHallName(booking.hall_id)}
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Clock className="h-3 w-3" />
-                      {booking.startTime} - {booking.endTime}
+                      {booking.start_time} - {booking.end_time}
                     </div>
                   </div>
                 </div>

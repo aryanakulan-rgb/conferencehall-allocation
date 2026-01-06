@@ -39,7 +39,7 @@ export function RecentBookings({ bookings, halls }: RecentBookingsProps) {
                       {booking.purpose}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {getHallName(booking.hallId)}
+                      {getHallName(booking.hall_id)}
                     </p>
                   </div>
                   <BookingStatusBadge status={booking.status} size="sm" />
@@ -52,7 +52,7 @@ export function RecentBookings({ bookings, halls }: RecentBookingsProps) {
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    {booking.startTime} - {booking.endTime}
+                    {booking.start_time} - {booking.end_time}
                   </span>
                 </div>
               </div>
