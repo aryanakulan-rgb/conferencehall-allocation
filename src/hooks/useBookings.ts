@@ -47,6 +47,63 @@ export function useUserBookings() {
   });
 }
 
+export async function checkBookingConflict(
+  hallId: string,
+  date: string,
+  startTime: string,
+  endTime: string,
+  excludeBookingId?: string
+): Promise<{ hasConflict: boolean; conflictingBooking?: Booking }> {
+  // Query for approved or pending bookings on the same hall and date
+  let query = supabase
+    .from('bookings')
+    .select('*')
+    .eq('hall_id', hallId)
+    .eq('date', date)
+    .in('status', ['approved', 'pending']);
+
+  if (excludeBookingId) {
+    query = query.neq('id', excludeBookingId);
+  }
+
+  const { data: existingBookings, error } = await query;
+
+  if (error) throw error;
+
+  // Check for time overlap
+  const conflictingBooking = existingBookings?.find((booking) => {
+    const existingStart = booking.start_time;
+    const existingEnd = booking.end_time;
+    
+    // Check if times overlap
+    // Overlap occurs when: newStart < existingEnd AND newEnd > existingStart
+    return startTime < existingEnd && endTime > existingStart;
+  });
+
+  return {
+    hasConflict: !!conflictingBooking,
+    conflictingBooking,
+  };
+}
+
+export function useCheckConflict() {
+  return useMutation({
+    mutationFn: async ({
+      hallId,
+      date,
+      startTime,
+      endTime,
+    }: {
+      hallId: string;
+      date: string;
+      startTime: string;
+      endTime: string;
+    }) => {
+      return checkBookingConflict(hallId, date, startTime, endTime);
+    },
+  });
+}
+
 export function useCreateBooking() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -54,6 +111,20 @@ export function useCreateBooking() {
   return useMutation({
     mutationFn: async (booking: Omit<BookingInsert, 'user_id'>) => {
       if (!user) throw new Error('User not authenticated');
+
+      // Check for conflicts before creating
+      const { hasConflict, conflictingBooking } = await checkBookingConflict(
+        booking.hall_id,
+        booking.date,
+        booking.start_time,
+        booking.end_time
+      );
+
+      if (hasConflict) {
+        throw new Error(
+          `Time slot conflicts with an existing ${conflictingBooking?.status} booking (${conflictingBooking?.start_time} - ${conflictingBooking?.end_time})`
+        );
+      }
 
       const { data, error } = await supabase
         .from('bookings')
