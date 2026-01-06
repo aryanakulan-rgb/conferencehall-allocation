@@ -7,9 +7,11 @@ import {
   ClipboardList, 
   Settings,
   ChevronRight,
-  CalendarPlus
+  CalendarPlus,
+  LogOut
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface NavItem {
   title: string;
@@ -29,12 +31,18 @@ const navItems: NavItem[] = [
 ];
 
 export function Sidebar() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   if (!user) return null;
 
   const filteredItems = navItems.filter(item => item.roles.includes(user.role));
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <aside className="hidden lg:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
@@ -62,12 +70,20 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-sidebar-border">
+      <div className="p-4 border-t border-sidebar-border space-y-3">
         <div className="rounded-lg bg-sidebar-accent/30 p-4">
           <p className="text-xs text-sidebar-foreground/70 mb-1">Logged in as</p>
           <p className="text-sm font-medium text-sidebar-foreground">{user.name}</p>
           <p className="text-xs text-sidebar-primary capitalize">{user.role}</p>
         </div>
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-sidebar-foreground/70 hover:text-destructive hover:bg-destructive/10"
+          onClick={handleLogout}
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Logout
+        </Button>
       </div>
     </aside>
   );
