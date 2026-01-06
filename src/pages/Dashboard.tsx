@@ -2,7 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { RecentBookings } from '@/components/dashboard/RecentBookings';
-import { BookingCalendar } from '@/components/booking/BookingCalendar';
+import { GoogleCalendarView } from '@/components/booking/GoogleCalendarView';
 import { PendingApprovals } from '@/components/admin/PendingApprovals';
 import { AdminAnalytics } from '@/components/dashboard/AdminAnalytics';
 import { useHalls } from '@/hooks/useHalls';
@@ -101,7 +101,7 @@ export default function Dashboard() {
               {/* Main Content Grid */}
               <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                  <BookingCalendar bookings={bookings} halls={filteredHalls} />
+                  <GoogleCalendarView bookings={bookings} halls={filteredHalls} />
                 </div>
                 <div>
                   <PendingApprovals 
@@ -158,7 +158,7 @@ export default function Dashboard() {
             {/* Main Content Grid */}
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <BookingCalendar bookings={bookings} halls={filteredHalls} />
+                <GoogleCalendarView bookings={bookings} halls={filteredHalls} />
               </div>
               <div>
                 <RecentBookings bookings={bookings} halls={halls} />

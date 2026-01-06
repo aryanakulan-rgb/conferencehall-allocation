@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { BookingCalendar } from '@/components/booking/BookingCalendar';
+import { GoogleCalendarView } from '@/components/booking/GoogleCalendarView';
 import { useBookings, useUserBookings } from '@/hooks/useBookings';
 import { useHalls } from '@/hooks/useHalls';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -40,7 +40,7 @@ export default function CalendarPage() {
           </p>
         </div>
 
-        <BookingCalendar bookings={bookings} halls={halls} />
+        <GoogleCalendarView bookings={bookings} halls={halls} />
       </div>
     </DashboardLayout>
   );
