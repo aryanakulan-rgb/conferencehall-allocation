@@ -6,8 +6,9 @@ import { GoogleCalendarView } from '@/components/booking/GoogleCalendarView';
 import { PendingApprovals } from '@/components/admin/PendingApprovals';
 import { AdminAnalytics } from '@/components/dashboard/AdminAnalytics';
 import { useHalls } from '@/hooks/useHalls';
-import { useBookings, useUserBookings, useUpdateBookingStatus } from '@/hooks/useBookings';
+import { useBookings, useUserBookings, useUpdateBookingStatus, useCancelBooking } from '@/hooks/useBookings';
 import { useProfiles } from '@/hooks/useProfiles';
+import { useSections } from '@/hooks/useSections';
 import { Calendar, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
@@ -23,8 +24,10 @@ export default function Dashboard() {
   const { data: allBookings = [], isLoading: allBookingsLoading } = useBookings();
   const { data: userBookings = [], isLoading: userBookingsLoading } = useUserBookings();
   const { data: profiles = [] } = useProfiles();
+  const { data: sections = [] } = useSections();
   
   const updateStatus = useUpdateBookingStatus();
+  const cancelBooking = useCancelBooking();
 
   const isAdmin = user?.role === 'admin';
   const bookings = isAdmin ? allBookings : userBookings;
@@ -48,6 +51,10 @@ export default function Dashboard() {
 
   const handleReject = (bookingId: string, remarks: string) => {
     updateStatus.mutate({ bookingId, status: 'rejected', remarks });
+  };
+
+  const handleDeleteBooking = (bookingId: string) => {
+    cancelBooking.mutate(bookingId);
   };
 
   if (isLoading) {
@@ -103,7 +110,13 @@ export default function Dashboard() {
               {/* Main Content Grid */}
               <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                  <GoogleCalendarView bookings={bookings} halls={filteredHalls} />
+                  <GoogleCalendarView 
+                    bookings={bookings} 
+                    halls={filteredHalls} 
+                    profiles={profiles}
+                    sections={sections}
+                    onDeleteBooking={handleDeleteBooking}
+                  />
                 </div>
                 <div>
                   <PendingApprovals 
@@ -160,7 +173,13 @@ export default function Dashboard() {
             {/* Main Content Grid */}
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <GoogleCalendarView bookings={bookings} halls={filteredHalls} />
+                <GoogleCalendarView 
+                  bookings={bookings} 
+                  halls={filteredHalls} 
+                  profiles={profiles}
+                  sections={sections}
+                  onDeleteBooking={handleDeleteBooking}
+                />
               </div>
               <div>
                 <RecentBookings bookings={bookings} halls={halls} />
