@@ -1,4 +1,4 @@
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
@@ -10,14 +10,23 @@ export function BackButton({ className }: BackButtonProps) {
   const navigate = useNavigate();
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={() => navigate(-1)}
-      className={className}
-    >
-      <ArrowLeft className="h-4 w-4 mr-2" />
-      Back
-    </Button>
+    <div className={`flex items-center gap-2 ${className}`}>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft className="h-4 w-4 mr-2" />
+        Back
+      </Button>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => navigate('/')}
+      >
+        <Home className="h-4 w-4 mr-2" />
+        Home
+      </Button>
+    </div>
   );
 }
