@@ -2,39 +2,38 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
-import { mockBookings, mockHalls } from '@/data/mockData';
+import { useUserBookings, Booking, BookingStatus } from '@/hooks/useBookings';
+import { useHalls } from '@/hooks/useHalls';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
-import { Calendar, Clock, MapPin, Plus, AlertCircle } from 'lucide-react';
-import { BookingStatus } from '@/types';
+import { Calendar, Clock, Plus, AlertCircle } from 'lucide-react';
 
 export default function MyBookings() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  if (!user) {
-    navigate('/');
-    return null;
-  }
+  const { data: bookings = [], isLoading: bookingsLoading } = useUserBookings();
+  const { data: halls = [], isLoading: hallsLoading } = useHalls();
 
-  const userBookings = mockBookings.filter(b => b.userId === user.id);
+  const isLoading = bookingsLoading || hallsLoading;
 
   const getHallName = (hallId: string) => {
-    return mockHalls.find(h => h.id === hallId)?.name || 'Unknown Hall';
+    return halls.find(h => h.id === hallId)?.name || 'Unknown Hall';
   };
 
   const filterBookings = (status: BookingStatus | 'all') => {
-    if (status === 'all') return userBookings;
-    return userBookings.filter(b => b.status === status);
+    if (status === 'all') return bookings;
+    return bookings.filter(b => b.status === status);
   };
 
-  const BookingCard = ({ booking }: { booking: typeof mockBookings[0] }) => (
+  const BookingCard = ({ booking }: { booking: Booking }) => (
     <div className="p-5 rounded-xl border bg-card shadow-soft hover:shadow-card transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-foreground truncate">{booking.purpose}</p>
-          <p className="text-sm text-muted-foreground">{getHallName(booking.hallId)}</p>
+          <p className="text-sm text-muted-foreground">{getHallName(booking.hall_id)}</p>
         </div>
         <BookingStatusBadge status={booking.status} />
       </div>
@@ -46,7 +45,7 @@ export default function MyBookings() {
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
           <Clock className="h-4 w-4" />
-          {booking.startTime} - {booking.endTime}
+          {booking.start_time} - {booking.end_time}
         </div>
       </div>
 
@@ -58,10 +57,31 @@ export default function MyBookings() {
       )}
 
       <div className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border">
-        Requested on {format(new Date(booking.createdAt), 'MMM d, yyyy')}
+        Requested on {format(new Date(booking.created_at), 'MMM d, yyyy')}
       </div>
     </div>
   );
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-48" />
+              <Skeleton className="h-4 w-72" />
+            </div>
+            <Skeleton className="h-10 w-32" />
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="h-48" />
+            ))}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -82,7 +102,7 @@ export default function MyBookings() {
         <Tabs defaultValue="all" className="space-y-6">
           <TabsList>
             <TabsTrigger value="all">
-              All ({userBookings.length})
+              All ({bookings.length})
             </TabsTrigger>
             <TabsTrigger value="pending">
               Pending ({filterBookings('pending').length})

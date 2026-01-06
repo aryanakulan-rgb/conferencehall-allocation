@@ -1,43 +1,18 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Building2, Shield, User, Lock, ArrowRight, Calendar, CheckCircle, Clock, FileText } from 'lucide-react';
-import { toast } from 'sonner';
-import { UserRole } from '@/types';
+import { Building2, Calendar, CheckCircle, Clock, FileText, ArrowRight } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeRole, setActiveRole] = useState<UserRole>('user');
+  const { isAuthenticated, isLoading } = useAuth();
 
-  // Redirect if already authenticated
-  if (isAuthenticated) {
-    navigate('/dashboard');
-    return null;
-  }
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    const success = await login(email, password, activeRole);
-    
-    if (success) {
-      toast.success('Login successful');
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
       navigate('/dashboard');
-    } else {
-      toast.error('Invalid credentials. Try demo accounts.');
     }
-    
-    setIsLoading(false);
-  };
+  }, [isAuthenticated, isLoading, navigate]);
 
   const features = [
     { icon: Calendar, title: 'Easy Booking', description: 'Book conference halls with just a few clicks' },
@@ -45,6 +20,14 @@ const Index = () => {
     { icon: CheckCircle, title: 'Quick Approvals', description: 'Fast approval workflow for bookings' },
     { icon: FileText, title: 'Complete Audit Trail', description: 'Full transparency with detailed logs' },
   ];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -88,69 +71,37 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Login Card */}
+            {/* Right Content - CTA Card */}
             <div className="lg:pl-12 animate-slide-up">
               <div className="bg-card rounded-2xl shadow-elevated p-8 max-w-md mx-auto">
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-semibold text-foreground">Welcome Back</h3>
-                  <p className="text-muted-foreground mt-1">Sign in to access the portal</p>
+                  <h3 className="text-2xl font-semibold text-foreground">Get Started</h3>
+                  <p className="text-muted-foreground mt-1">Login or create an account to book halls</p>
                 </div>
 
-                <Tabs value={activeRole} onValueChange={(v) => setActiveRole(v as UserRole)} className="mb-6">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="user" className="gap-2">
-                      <User className="h-4 w-4" />
-                      User Login
-                    </TabsTrigger>
-                    <TabsTrigger value="admin" className="gap-2">
-                      <Shield className="h-4 w-4" />
-                      Admin Login
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
-
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-
+                <div className="space-y-4">
                   <Button 
-                    type="submit" 
                     variant="accent" 
                     className="w-full"
-                    disabled={isLoading}
+                    onClick={() => navigate('/auth')}
                   >
-                    {isLoading ? 'Signing in...' : 'Sign In'}
+                    Login / Sign Up
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                </form>
+
+                  <div className="text-center text-sm text-muted-foreground">
+                    <p>Secure access for government employees</p>
+                  </div>
+                </div>
 
                 <div className="mt-6 p-4 rounded-lg bg-secondary/50 border border-border">
-                  <p className="text-xs font-medium text-foreground mb-2">Demo Credentials:</p>
-                  <div className="space-y-1 text-xs text-muted-foreground">
-                    <p><span className="font-medium">Admin:</span> admin@dic.gov.in / password</p>
-                    <p><span className="font-medium">User:</span> user@dic.gov.in / password</p>
-                  </div>
+                  <p className="text-sm font-medium text-foreground mb-2">System Features:</p>
+                  <ul className="space-y-1 text-sm text-muted-foreground">
+                    <li>✓ Book conference halls online</li>
+                    <li>✓ Real-time availability check</li>
+                    <li>✓ Admin approval workflow</li>
+                    <li>✓ Complete audit trail</li>
+                  </ul>
                 </div>
               </div>
             </div>

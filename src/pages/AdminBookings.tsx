@@ -3,10 +3,13 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
-import { mockBookings, mockHalls } from '@/data/mockData';
+import { useBookings, useUpdateBookingStatus, Booking, BookingStatus } from '@/hooks/useBookings';
+import { useHalls } from '@/hooks/useHalls';
+import { useProfiles } from '@/hooks/useProfiles';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -26,32 +29,41 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
 import { Search, CheckCircle, XCircle, Eye } from 'lucide-react';
-import { Booking, BookingStatus } from '@/types';
-import { toast } from 'sonner';
 
 export default function AdminBookings() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [bookings, setBookings] = useState<Booking[]>(mockBookings);
   const [searchQuery, setSearchQuery] = useState('');
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [remarks, setRemarks] = useState('');
 
-  if (!user || user.role !== 'admin') {
-    navigate('/');
+  const { data: bookings = [], isLoading: bookingsLoading } = useBookings();
+  const { data: halls = [], isLoading: hallsLoading } = useHalls();
+  const { data: profiles = [] } = useProfiles();
+  const updateStatus = useUpdateBookingStatus();
+
+  const isLoading = bookingsLoading || hallsLoading;
+
+  if (user?.role !== 'admin') {
+    navigate('/dashboard');
     return null;
   }
 
   const getHallName = (hallId: string) => {
-    return mockHalls.find(h => h.id === hallId)?.name || 'Unknown Hall';
+    return halls.find(h => h.id === hallId)?.name || 'Unknown Hall';
+  };
+
+  const getUserName = (userId: string) => {
+    return profiles.find(p => p.id === userId)?.name || 'Unknown User';
   };
 
   const filteredBookings = bookings.filter(booking => {
     const searchLower = searchQuery.toLowerCase();
     return (
       booking.purpose.toLowerCase().includes(searchLower) ||
-      getHallName(booking.hallId).toLowerCase().includes(searchLower)
+      getHallName(booking.hall_id).toLowerCase().includes(searchLower) ||
+      getUserName(booking.user_id).toLowerCase().includes(searchLower)
     );
   });
 
@@ -61,10 +73,7 @@ export default function AdminBookings() {
   };
 
   const handleApprove = (booking: Booking) => {
-    setBookings(prev => prev.map(b => 
-      b.id === booking.id ? { ...b, status: 'approved' as const, updatedAt: new Date().toISOString() } : b
-    ));
-    toast.success('Booking approved successfully');
+    updateStatus.mutate({ bookingId: booking.id, status: 'approved' });
   };
 
   const handleRejectClick = (booking: Booking) => {
@@ -75,12 +84,13 @@ export default function AdminBookings() {
 
   const handleRejectConfirm = () => {
     if (selectedBooking && remarks.trim()) {
-      setBookings(prev => prev.map(b => 
-        b.id === selectedBooking.id ? { ...b, status: 'rejected' as const, remarks: remarks.trim(), updatedAt: new Date().toISOString() } : b
-      ));
+      updateStatus.mutate({ 
+        bookingId: selectedBooking.id, 
+        status: 'rejected', 
+        remarks: remarks.trim() 
+      });
       setRejectDialogOpen(false);
       setSelectedBooking(null);
-      toast.success('Booking rejected');
     }
   };
 
@@ -90,6 +100,7 @@ export default function AdminBookings() {
         <TableHeader>
           <TableRow>
             <TableHead>Purpose</TableHead>
+            <TableHead>Requested By</TableHead>
             <TableHead>Hall</TableHead>
             <TableHead>Date & Time</TableHead>
             <TableHead>Status</TableHead>
@@ -99,7 +110,7 @@ export default function AdminBookings() {
         <TableBody>
           {bookings.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+              <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                 No bookings found
               </TableCell>
             </TableRow>
@@ -107,16 +118,16 @@ export default function AdminBookings() {
             bookings.map((booking) => (
               <TableRow key={booking.id}>
                 <TableCell>
-                  <div>
-                    <p className="font-medium text-foreground">{booking.purpose}</p>
-                    <p className="text-xs text-muted-foreground">Section Officer</p>
-                  </div>
+                  <p className="font-medium text-foreground">{booking.purpose}</p>
                 </TableCell>
-                <TableCell>{getHallName(booking.hallId)}</TableCell>
+                <TableCell>
+                  <p className="text-sm">{getUserName(booking.user_id)}</p>
+                </TableCell>
+                <TableCell>{getHallName(booking.hall_id)}</TableCell>
                 <TableCell>
                   <div className="text-sm">
                     <p>{format(new Date(booking.date), 'MMM d, yyyy')}</p>
-                    <p className="text-muted-foreground">{booking.startTime} - {booking.endTime}</p>
+                    <p className="text-muted-foreground">{booking.start_time} - {booking.end_time}</p>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -125,10 +136,20 @@ export default function AdminBookings() {
                 <TableCell className="text-right">
                   {booking.status === 'pending' ? (
                     <div className="flex items-center justify-end gap-2">
-                      <Button size="sm" variant="success" onClick={() => handleApprove(booking)}>
+                      <Button 
+                        size="sm" 
+                        variant="success" 
+                        onClick={() => handleApprove(booking)}
+                        disabled={updateStatus.isPending}
+                      >
                         <CheckCircle className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" variant="destructive" onClick={() => handleRejectClick(booking)}>
+                      <Button 
+                        size="sm" 
+                        variant="destructive" 
+                        onClick={() => handleRejectClick(booking)}
+                        disabled={updateStatus.isPending}
+                      >
                         <XCircle className="h-4 w-4" />
                       </Button>
                     </div>
@@ -145,6 +166,20 @@ export default function AdminBookings() {
       </Table>
     </div>
   );
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-72" />
+          </div>
+          <Skeleton className="h-96" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -209,7 +244,7 @@ export default function AdminBookings() {
             <Button 
               variant="destructive" 
               onClick={handleRejectConfirm}
-              disabled={!remarks.trim()}
+              disabled={!remarks.trim() || updateStatus.isPending}
             >
               Confirm Rejection
             </Button>

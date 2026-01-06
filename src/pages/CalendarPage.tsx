@@ -1,16 +1,33 @@
 import { useAuth } from '@/context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { BookingCalendar } from '@/components/booking/BookingCalendar';
-import { mockBookings, mockHalls } from '@/data/mockData';
+import { useBookings, useUserBookings } from '@/hooks/useBookings';
+import { useHalls } from '@/hooks/useHalls';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CalendarPage() {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  
+  const { data: allBookings = [], isLoading: allBookingsLoading } = useBookings();
+  const { data: userBookings = [], isLoading: userBookingsLoading } = useUserBookings();
+  const { data: halls = [], isLoading: hallsLoading } = useHalls();
 
-  if (!user) {
-    navigate('/');
-    return null;
+  const isAdmin = user?.role === 'admin';
+  const bookings = isAdmin ? allBookings : userBookings;
+  const isLoading = hallsLoading || (isAdmin ? allBookingsLoading : userBookingsLoading);
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-72" />
+          </div>
+          <Skeleton className="h-96" />
+        </div>
+      </DashboardLayout>
+    );
   }
 
   return (
@@ -23,7 +40,7 @@ export default function CalendarPage() {
           </p>
         </div>
 
-        <BookingCalendar bookings={mockBookings} halls={mockHalls} />
+        <BookingCalendar bookings={bookings} halls={halls} />
       </div>
     </DashboardLayout>
   );

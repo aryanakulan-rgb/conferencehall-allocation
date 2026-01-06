@@ -1,49 +1,19 @@
-export type UserRole = 'admin' | 'user';
+import { Database } from '@/integrations/supabase/types';
+
+export type UserRole = Database['public']['Enums']['app_role'];
+export type BookingStatus = Database['public']['Enums']['booking_status'];
+export type HallType = Database['public']['Enums']['hall_type'];
+
+export type Hall = Database['public']['Tables']['halls']['Row'];
+export type Booking = Database['public']['Tables']['bookings']['Row'];
+export type Profile = Database['public']['Tables']['profiles']['Row'];
+export type Section = Database['public']['Tables']['sections']['Row'];
+export type AuditLog = Database['public']['Tables']['audit_logs']['Row'];
 
 export interface User {
   id: string;
   name: string;
   email: string;
   role: UserRole;
-  section: string;
-}
-
-export interface Hall {
-  id: string;
-  name: string;
-  type: 'conference' | 'mini';
-  capacity: number;
-  facilities: string[];
-  isActive: boolean;
-  description: string;
-}
-
-export type BookingStatus = 'pending' | 'approved' | 'rejected';
-
-export interface Booking {
-  id: string;
-  hallId: string;
-  userId: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  purpose: string;
-  status: BookingStatus;
-  remarks?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Section {
-  id: string;
-  name: string;
-  code: string;
-}
-
-export interface AuditLog {
-  id: string;
-  userId: string;
-  action: string;
-  details: string;
-  timestamp: string;
+  sectionId?: string | null;
 }
