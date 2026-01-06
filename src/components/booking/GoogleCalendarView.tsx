@@ -12,7 +12,7 @@ import {
   addMonths,
   subMonths
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
@@ -27,11 +27,12 @@ interface GoogleCalendarViewProps {
   profiles?: Profile[];
   sections?: Section[];
   onDeleteBooking?: (bookingId: string) => void;
+  onEditBooking?: (booking: Booking) => void;
 }
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export function GoogleCalendarView({ bookings, halls, profiles = [], sections = [], onDeleteBooking }: GoogleCalendarViewProps) {
+export function GoogleCalendarView({ bookings, halls, profiles = [], sections = [], onDeleteBooking, onEditBooking }: GoogleCalendarViewProps) {
   const { user } = useAuth();
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [selectedHallId, setSelectedHallId] = useState<string>('all');
@@ -76,9 +77,19 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   };
 
   const canDeleteBooking = (booking: Booking) => {
-    // Admin can delete any booking, users can delete their own pending bookings
     if (isAdmin) return true;
     return booking.user_id === user?.id && booking.status === 'pending';
+  };
+
+  const canEditBooking = (booking: Booking) => {
+    return booking.user_id === user?.id && booking.status === 'pending';
+  };
+
+  const handleEditClick = (booking: Booking) => {
+    if (onEditBooking) {
+      setDialogOpen(false);
+      onEditBooking(booking);
+    }
   };
 
   // Filter bookings by selected hall
@@ -274,8 +285,18 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                     <p className="font-medium text-foreground text-sm">
                       {booking.purpose}
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <BookingStatusBadge status={booking.status} size="sm" />
+                      {canEditBooking(booking) && onEditBooking && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-primary hover:text-primary hover:bg-primary/10"
+                          onClick={() => handleEditClick(booking)}
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
                       {canDeleteBooking(booking) && onDeleteBooking && (
                         <AlertDialog>
                           <AlertDialogTrigger asChild>

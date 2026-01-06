@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { RecentBookings } from '@/components/dashboard/RecentBookings';
 import { GoogleCalendarView } from '@/components/booking/GoogleCalendarView';
+import { EditBookingDialog } from '@/components/booking/EditBookingDialog';
 import { PendingApprovals } from '@/components/admin/PendingApprovals';
 import { AdminAnalytics } from '@/components/dashboard/AdminAnalytics';
 import { useHalls } from '@/hooks/useHalls';
-import { useBookings, useUserBookings, useUpdateBookingStatus, useCancelBooking } from '@/hooks/useBookings';
+import { useBookings, useUserBookings, useUpdateBookingStatus, useCancelBooking, useUpdateBooking, Booking } from '@/hooks/useBookings';
 import { useProfiles } from '@/hooks/useProfiles';
 import { useSections } from '@/hooks/useSections';
 import { Calendar, CheckCircle, Clock, XCircle } from 'lucide-react';
@@ -19,6 +21,8 @@ import { BackButton } from '@/components/navigation/BackButton';
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   
   const { data: halls = [], isLoading: hallsLoading } = useHalls();
   const { data: allBookings = [], isLoading: allBookingsLoading } = useBookings();
@@ -28,12 +32,12 @@ export default function Dashboard() {
   
   const updateStatus = useUpdateBookingStatus();
   const cancelBooking = useCancelBooking();
+  const updateBooking = useUpdateBooking();
 
   const isAdmin = user?.role === 'admin';
   const bookings = isAdmin ? allBookings : userBookings;
   const isLoading = hallsLoading || (isAdmin ? allBookingsLoading : userBookingsLoading);
 
-  // Filter halls for regular users to show only Mini and Main Conference Halls
   const filteredHalls = isAdmin 
     ? halls 
     : halls.filter(hall => 
@@ -55,6 +59,27 @@ export default function Dashboard() {
 
   const handleDeleteBooking = (bookingId: string) => {
     cancelBooking.mutate(bookingId);
+  };
+
+  const handleEditBooking = (booking: Booking) => {
+    setEditingBooking(booking);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveBooking = (data: {
+    bookingId: string;
+    hallId: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    purpose: string;
+  }) => {
+    updateBooking.mutate(data, {
+      onSuccess: () => {
+        setEditDialogOpen(false);
+        setEditingBooking(null);
+      },
+    });
   };
 
   if (isLoading) {
@@ -116,6 +141,7 @@ export default function Dashboard() {
                     profiles={profiles}
                     sections={sections}
                     onDeleteBooking={handleDeleteBooking}
+                    onEditBooking={handleEditBooking}
                   />
                 </div>
                 <div>
@@ -179,6 +205,7 @@ export default function Dashboard() {
                   profiles={profiles}
                   sections={sections}
                   onDeleteBooking={handleDeleteBooking}
+                  onEditBooking={handleEditBooking}
                 />
               </div>
               <div>
@@ -187,6 +214,15 @@ export default function Dashboard() {
             </div>
           </>
         )}
+
+        <EditBookingDialog
+          booking={editingBooking}
+          halls={halls}
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          onSave={handleSaveBooking}
+          isSubmitting={updateBooking.isPending}
+        />
       </div>
     </DashboardLayout>
   );

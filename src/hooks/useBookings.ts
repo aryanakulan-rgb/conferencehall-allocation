@@ -205,3 +205,68 @@ export function useUpdateBookingStatus() {
     },
   });
 }
+
+export function useUpdateBooking() {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async ({
+      bookingId,
+      hallId,
+      date,
+      startTime,
+      endTime,
+      purpose,
+    }: {
+      bookingId: string;
+      hallId: string;
+      date: string;
+      startTime: string;
+      endTime: string;
+      purpose: string;
+    }) => {
+      if (!user) throw new Error('User not authenticated');
+
+      // Check for conflicts (exclude current booking)
+      const { hasConflict, conflictingBooking } = await checkBookingConflict(
+        hallId,
+        date,
+        startTime,
+        endTime,
+        bookingId
+      );
+
+      if (hasConflict) {
+        throw new Error(
+          `Time slot conflicts with an existing ${conflictingBooking?.status} booking (${conflictingBooking?.start_time} - ${conflictingBooking?.end_time})`
+        );
+      }
+
+      const { data, error } = await supabase
+        .from('bookings')
+        .update({
+          hall_id: hallId,
+          date,
+          start_time: startTime,
+          end_time: endTime,
+          purpose,
+        })
+        .eq('id', bookingId)
+        .eq('user_id', user.id)
+        .eq('status', 'pending')
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      toast.success('Booking updated successfully!');
+    },
+    onError: (error) => {
+      toast.error('Failed to update booking: ' + error.message);
+    },
+  });
+}
