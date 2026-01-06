@@ -29,6 +29,14 @@ export default function Dashboard() {
   const bookings = isAdmin ? allBookings : userBookings;
   const isLoading = hallsLoading || (isAdmin ? allBookingsLoading : userBookingsLoading);
 
+  // Filter halls for regular users to show only Mini and Main Conference Halls
+  const filteredHalls = isAdmin 
+    ? halls 
+    : halls.filter(hall => 
+        hall.name.toLowerCase().includes('mini conference') || 
+        hall.name.toLowerCase().includes('main conference')
+      );
+
   const pendingCount = bookings.filter(b => b.status === 'pending').length;
   const approvedCount = bookings.filter(b => b.status === 'approved').length;
   const rejectedCount = bookings.filter(b => b.status === 'rejected').length;
@@ -93,7 +101,7 @@ export default function Dashboard() {
               {/* Main Content Grid */}
               <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
-                  <BookingCalendar bookings={bookings} halls={halls} />
+                  <BookingCalendar bookings={bookings} halls={filteredHalls} />
                 </div>
                 <div>
                   <PendingApprovals 
@@ -150,7 +158,7 @@ export default function Dashboard() {
             {/* Main Content Grid */}
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <BookingCalendar bookings={bookings} halls={halls} />
+                <BookingCalendar bookings={bookings} halls={filteredHalls} />
               </div>
               <div>
                 <RecentBookings bookings={bookings} halls={halls} />
