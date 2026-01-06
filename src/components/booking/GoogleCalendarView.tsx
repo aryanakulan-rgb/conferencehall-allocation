@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Booking, Hall } from '@/types';
+import { Booking, Hall, Profile, Section } from '@/types';
 import { 
   format, 
   startOfMonth, 
@@ -12,30 +12,46 @@ import {
   addMonths,
   subMonths
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, Clock, MapPin } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
+import { useAuth } from '@/context/AuthContext';
 
 interface GoogleCalendarViewProps {
   bookings: Booking[];
   halls: Hall[];
+  profiles?: Profile[];
+  sections?: Section[];
+  onDeleteBooking?: (bookingId: string) => void;
 }
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-export function GoogleCalendarView({ bookings, halls }: GoogleCalendarViewProps) {
+export function GoogleCalendarView({ bookings, halls, profiles = [], sections = [], onDeleteBooking }: GoogleCalendarViewProps) {
+  const { user } = useAuth();
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [selectedHallId, setSelectedHallId] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const activeHalls = halls.filter(h => h.is_active);
+  const isAdmin = user?.role === 'admin';
 
   const getHallName = (hallId: string) => {
     return halls.find(h => h.id === hallId)?.name || 'Unknown Hall';
+  };
+
+  const getProfileByUserId = (userId: string) => {
+    return profiles.find(p => p.id === userId);
+  };
+
+  const getSectionName = (sectionId: string | null | undefined) => {
+    if (!sectionId) return 'No Section';
+    return sections.find(s => s.id === sectionId)?.name || 'Unknown Section';
   };
 
   const getHallColor = (hallId: string) => {
@@ -57,6 +73,12 @@ export function GoogleCalendarView({ bookings, halls }: GoogleCalendarViewProps)
       default:
         return 'bg-muted text-muted-foreground';
     }
+  };
+
+  const canDeleteBooking = (booking: Booking) => {
+    // Admin can delete any booking, users can delete their own pending bookings
+    if (isAdmin) return true;
+    return booking.user_id === user?.id && booking.status === 'pending';
   };
 
   // Filter bookings by selected hall
@@ -95,6 +117,12 @@ export function GoogleCalendarView({ bookings, halls }: GoogleCalendarViewProps)
     if (dayBookings.length > 0) {
       setSelectedDate(date);
       setDialogOpen(true);
+    }
+  };
+
+  const handleDelete = (bookingId: string) => {
+    if (onDeleteBooking) {
+      onDeleteBooking(bookingId);
     }
   };
 
@@ -233,30 +261,73 @@ export function GoogleCalendarView({ bookings, halls }: GoogleCalendarViewProps)
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3 max-h-[400px] overflow-y-auto">
-            {selectedDateBookings.map((booking) => (
-              <div
-                key={booking.id}
-                className="p-3 rounded-lg bg-secondary/50 border border-border/50"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <p className="font-medium text-foreground text-sm">
-                    {booking.purpose}
-                  </p>
-                  <BookingStatusBadge status={booking.status} size="sm" />
-                </div>
-                
-                <div className="space-y-1 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="h-3 w-3" />
-                    {getHallName(booking.hall_id)}
+            {selectedDateBookings.map((booking) => {
+              const profile = getProfileByUserId(booking.user_id);
+              const sectionName = getSectionName(profile?.section_id);
+              
+              return (
+                <div
+                  key={booking.id}
+                  className="p-3 rounded-lg bg-secondary/50 border border-border/50"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <p className="font-medium text-foreground text-sm">
+                      {booking.purpose}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <BookingStatusBadge status={booking.status} size="sm" />
+                      {canDeleteBooking(booking) && onDeleteBooking && (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive hover:bg-destructive/10">
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Booking</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete this booking? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleDelete(booking.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="h-3 w-3" />
-                    {booking.start_time} - {booking.end_time}
+                  
+                  <div className="space-y-1 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3" />
+                      {getHallName(booking.hall_id)}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-3 w-3" />
+                      {booking.start_time} - {booking.end_time}
+                    </div>
+                    {profile && (
+                      <div className="flex items-center gap-1.5">
+                        <User className="h-3 w-3" />
+                        {profile.name}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1.5">
+                      <Building2 className="h-3 w-3" />
+                      {sectionName}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             {selectedDateBookings.length === 0 && (
               <p className="text-center text-muted-foreground py-4">
                 No bookings on this date
