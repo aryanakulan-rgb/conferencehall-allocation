@@ -47,7 +47,7 @@ export default function AdminBookings() {
   const isLoading = bookingsLoading || hallsLoading;
 
   if (user?.role !== 'admin') {
-    navigate('/dashboard');
+    navigate('/dashboard', { replace: true });
     return null;
   }
 

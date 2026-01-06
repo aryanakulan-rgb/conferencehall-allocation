@@ -25,7 +25,7 @@ export default function Auth() {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate]);
 
@@ -74,7 +74,7 @@ export default function Auth() {
       toast.error(error);
     } else {
       toast.success('Login successful!');
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
     
     setIsSubmitting(false);
@@ -92,7 +92,7 @@ export default function Auth() {
       toast.error(error);
     } else {
       toast.success('Account created successfully! You can now login.');
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     }
     
     setIsSubmitting(false);
