@@ -4,42 +4,61 @@ import { StatCard } from '@/components/dashboard/StatCard';
 import { RecentBookings } from '@/components/dashboard/RecentBookings';
 import { BookingCalendar } from '@/components/booking/BookingCalendar';
 import { PendingApprovals } from '@/components/admin/PendingApprovals';
-import { mockBookings, mockHalls } from '@/data/mockData';
+import { useHalls } from '@/hooks/useHalls';
+import { useBookings, useUserBookings, useUpdateBookingStatus } from '@/hooks/useBookings';
+import { useProfiles } from '@/hooks/useProfiles';
 import { Building, Calendar, CheckCircle, Clock, Users, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { Booking } from '@/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [bookings, setBookings] = useState<Booking[]>(mockBookings);
+  
+  const { data: halls = [], isLoading: hallsLoading } = useHalls();
+  const { data: allBookings = [], isLoading: allBookingsLoading } = useBookings();
+  const { data: userBookings = [], isLoading: userBookingsLoading } = useUserBookings();
+  const { data: profiles = [] } = useProfiles();
+  
+  const updateStatus = useUpdateBookingStatus();
 
-  if (!user) {
-    navigate('/');
-    return null;
-  }
+  const isAdmin = user?.role === 'admin';
+  const bookings = isAdmin ? allBookings : userBookings;
+  const isLoading = hallsLoading || (isAdmin ? allBookingsLoading : userBookingsLoading);
 
-  const isAdmin = user.role === 'admin';
-
-  const userBookings = isAdmin ? bookings : bookings.filter(b => b.userId === user.id);
-  const pendingCount = userBookings.filter(b => b.status === 'pending').length;
-  const approvedCount = userBookings.filter(b => b.status === 'approved').length;
-  const rejectedCount = userBookings.filter(b => b.status === 'rejected').length;
-  const activeHalls = mockHalls.filter(h => h.isActive).length;
+  const pendingCount = bookings.filter(b => b.status === 'pending').length;
+  const approvedCount = bookings.filter(b => b.status === 'approved').length;
+  const rejectedCount = bookings.filter(b => b.status === 'rejected').length;
+  const activeHalls = halls.filter(h => h.is_active).length;
 
   const handleApprove = (bookingId: string) => {
-    setBookings(prev => prev.map(b => 
-      b.id === bookingId ? { ...b, status: 'approved' as const, updatedAt: new Date().toISOString() } : b
-    ));
+    updateStatus.mutate({ bookingId, status: 'approved' });
   };
 
   const handleReject = (bookingId: string, remarks: string) => {
-    setBookings(prev => prev.map(b => 
-      b.id === bookingId ? { ...b, status: 'rejected' as const, remarks, updatedAt: new Date().toISOString() } : b
-    ));
+    updateStatus.mutate({ bookingId, status: 'rejected', remarks });
   };
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-8">
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-48" />
+              <Skeleton className="h-4 w-72" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-32" />
+            ))}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -51,7 +70,7 @@ export default function Dashboard() {
               {isAdmin ? 'Admin Dashboard' : 'My Dashboard'}
             </h1>
             <p className="text-muted-foreground">
-              Welcome back, {user.name}. {isAdmin ? 'Manage bookings and halls.' : 'View and manage your bookings.'}
+              Welcome back, {user?.name}. {isAdmin ? 'Manage bookings and halls.' : 'View and manage your bookings.'}
             </p>
           </div>
           {!isAdmin && (
@@ -83,13 +102,13 @@ export default function Dashboard() {
               <StatCard
                 title="Active Halls"
                 value={activeHalls}
-                subtitle={`of ${mockHalls.length} total`}
+                subtitle={`of ${halls.length} total`}
                 icon={Building}
               />
               <StatCard
                 title="Total Users"
-                value={12}
-                subtitle="Active users"
+                value={profiles.length}
+                subtitle="Registered users"
                 icon={Users}
               />
             </>
@@ -97,7 +116,7 @@ export default function Dashboard() {
             <>
               <StatCard
                 title="My Bookings"
-                value={userBookings.length}
+                value={bookings.length}
                 subtitle="Total requests"
                 icon={Calendar}
                 variant="primary"
@@ -129,19 +148,19 @@ export default function Dashboard() {
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <BookingCalendar bookings={bookings} halls={mockHalls} />
+            <BookingCalendar bookings={bookings} halls={halls} />
           </div>
           
           <div className="space-y-6">
             {isAdmin ? (
               <PendingApprovals 
                 bookings={bookings} 
-                halls={mockHalls}
+                halls={halls}
                 onApprove={handleApprove}
                 onReject={handleReject}
               />
             ) : (
-              <RecentBookings bookings={userBookings} halls={mockHalls} />
+              <RecentBookings bookings={bookings} halls={halls} />
             )}
           </div>
         </div>

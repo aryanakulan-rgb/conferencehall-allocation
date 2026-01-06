@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { HallCard } from '@/components/halls/HallCard';
-import { BookingForm, BookingFormData } from '@/components/booking/BookingForm';
-import { mockHalls } from '@/data/mockData';
-import { Hall } from '@/types';
-import { Button } from '@/components/ui/button';
+import { BookingForm } from '@/components/booking/BookingForm';
+import { useActiveHalls, Hall } from '@/hooks/useHalls';
+import { useCreateBooking } from '@/hooks/useBookings';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Dialog,
   DialogContent,
@@ -16,26 +14,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Search, Building, LayoutGrid, List } from 'lucide-react';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { Search, Building } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Halls() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [hallType, setHallType] = useState<'all' | 'conference' | 'mini'>('all');
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   const [selectedHall, setSelectedHall] = useState<Hall | undefined>();
 
-  if (!user) {
-    navigate('/');
-    return null;
-  }
+  const { data: halls = [], isLoading } = useActiveHalls();
+  const createBooking = useCreateBooking();
 
-  const filteredHalls = mockHalls.filter(hall => {
+  const filteredHalls = halls.filter(hall => {
     const matchesSearch = hall.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      hall.description.toLowerCase().includes(searchQuery.toLowerCase());
+      (hall.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
     const matchesType = hallType === 'all' || hall.type === hallType;
     return matchesSearch && matchesType;
   });
@@ -45,14 +39,41 @@ export default function Halls() {
     setBookingDialogOpen(true);
   };
 
-  const handleBookingSubmit = (data: BookingFormData) => {
-    // In real app, this would make an API call
-    toast.success('Booking request submitted successfully!', {
-      description: `Your request for ${format(data.date, 'MMM d, yyyy')} has been sent for approval.`,
+  const handleBookingSubmit = async (data: {
+    hallId: string;
+    date: Date;
+    startTime: string;
+    endTime: string;
+    purpose: string;
+  }) => {
+    await createBooking.mutateAsync({
+      hall_id: data.hallId,
+      date: data.date.toISOString().split('T')[0],
+      start_time: data.startTime,
+      end_time: data.endTime,
+      purpose: data.purpose,
     });
     setBookingDialogOpen(false);
     setSelectedHall(undefined);
   };
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-72" />
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-64" />
+            ))}
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -90,7 +111,7 @@ export default function Halls() {
         <div className="flex items-center gap-6 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Building className="h-4 w-4" />
-            <span>{filteredHalls.filter(h => h.isActive).length} available</span>
+            <span>{filteredHalls.length} available</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-success" />
@@ -116,7 +137,7 @@ export default function Halls() {
                 key={hall.id}
                 hall={hall}
                 onBook={() => handleBookClick(hall)}
-                showBookButton={user.role === 'user'}
+                showBookButton={user?.role === 'user'}
               />
             ))}
           </div>
@@ -134,10 +155,11 @@ export default function Halls() {
           </DialogHeader>
           
           <BookingForm
-            halls={mockHalls}
+            halls={halls}
             selectedHall={selectedHall}
             onSubmit={handleBookingSubmit}
             onCancel={() => setBookingDialogOpen(false)}
+            isSubmitting={createBooking.isPending}
           />
         </DialogContent>
       </Dialog>
