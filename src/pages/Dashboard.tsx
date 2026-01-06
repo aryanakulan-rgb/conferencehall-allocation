@@ -4,13 +4,15 @@ import { StatCard } from '@/components/dashboard/StatCard';
 import { RecentBookings } from '@/components/dashboard/RecentBookings';
 import { BookingCalendar } from '@/components/booking/BookingCalendar';
 import { PendingApprovals } from '@/components/admin/PendingApprovals';
+import { AdminAnalytics } from '@/components/dashboard/AdminAnalytics';
 import { useHalls } from '@/hooks/useHalls';
 import { useBookings, useUserBookings, useUpdateBookingStatus } from '@/hooks/useBookings';
 import { useProfiles } from '@/hooks/useProfiles';
-import { Building, Calendar, CheckCircle, Clock, Users, XCircle } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -30,7 +32,6 @@ export default function Dashboard() {
   const pendingCount = bookings.filter(b => b.status === 'pending').length;
   const approvedCount = bookings.filter(b => b.status === 'approved').length;
   const rejectedCount = bookings.filter(b => b.status === 'rejected').length;
-  const activeHalls = halls.filter(h => h.is_active).length;
 
   const handleApprove = (bookingId: string) => {
     updateStatus.mutate({ bookingId, status: 'approved' });
@@ -81,39 +82,42 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {isAdmin ? (
-            <>
-              <StatCard
-                title="Total Bookings"
-                value={bookings.length}
-                subtitle="All time"
-                icon={Calendar}
-                variant="primary"
+        {isAdmin ? (
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList>
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview" className="space-y-6">
+              {/* Main Content Grid */}
+              <div className="grid lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <BookingCalendar bookings={bookings} halls={halls} />
+                </div>
+                <div>
+                  <PendingApprovals 
+                    bookings={bookings} 
+                    halls={halls}
+                    onApprove={handleApprove}
+                    onReject={handleReject}
+                  />
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="analytics">
+              <AdminAnalytics 
+                bookings={bookings} 
+                halls={halls} 
+                profilesCount={profiles.length}
               />
-              <StatCard
-                title="Pending Approvals"
-                value={pendingCount}
-                subtitle="Requires action"
-                icon={Clock}
-                variant="warning"
-              />
-              <StatCard
-                title="Active Halls"
-                value={activeHalls}
-                subtitle={`of ${halls.length} total`}
-                icon={Building}
-              />
-              <StatCard
-                title="Total Users"
-                value={profiles.length}
-                subtitle="Registered users"
-                icon={Users}
-              />
-            </>
-          ) : (
-            <>
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <>
+            {/* Stats Grid for Users */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
                 title="My Bookings"
                 value={bookings.length}
@@ -141,29 +145,19 @@ export default function Dashboard() {
                 subtitle="Declined requests"
                 icon={XCircle}
               />
-            </>
-          )}
-        </div>
+            </div>
 
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <BookingCalendar bookings={bookings} halls={halls} />
-          </div>
-          
-          <div className="space-y-6">
-            {isAdmin ? (
-              <PendingApprovals 
-                bookings={bookings} 
-                halls={halls}
-                onApprove={handleApprove}
-                onReject={handleReject}
-              />
-            ) : (
-              <RecentBookings bookings={bookings} halls={halls} />
-            )}
-          </div>
-        </div>
+            {/* Main Content Grid */}
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <BookingCalendar bookings={bookings} halls={halls} />
+              </div>
+              <div>
+                <RecentBookings bookings={bookings} halls={halls} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </DashboardLayout>
   );
