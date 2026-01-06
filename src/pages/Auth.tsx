@@ -242,10 +242,23 @@ export default function Auth() {
             </TabsContent>
           </Tabs>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
+          {/* Demo Credentials */}
+          <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
+            <p className="text-xs font-medium text-muted-foreground mb-2 text-center">Demo Credentials</p>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center p-2 bg-background rounded">
+                <span className="font-medium text-foreground">Admin:</span>
+                <span className="text-muted-foreground">admin@dic.gov.in / admin123</span>
+              </div>
+              <div className="flex justify-between items-center p-2 bg-background rounded">
+                <span className="font-medium text-foreground">User:</span>
+                <span className="text-muted-foreground">user@dic.gov.in / user123</span>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-center text-sm text-muted-foreground mt-4">
             New users are assigned the 'User' role by default.
-            <br />
-            Contact admin for admin access.
           </p>
         </div>
 
