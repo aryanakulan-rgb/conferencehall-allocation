@@ -32,7 +32,10 @@ export function Breadcrumbs() {
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-sm text-muted-foreground">
+    <nav 
+      aria-label="Breadcrumb" 
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground bg-muted/50 rounded-lg border border-border/50"
+    >
       <Link
         to="/dashboard"
         className="flex items-center gap-1 hover:text-foreground transition-colors"
@@ -43,8 +46,8 @@ export function Breadcrumbs() {
       {breadcrumbs.map((crumb, index) => {
         const isLast = index === breadcrumbs.length - 1;
         return (
-          <span key={crumb.href} className="flex items-center gap-1">
-            <ChevronRight className="h-3.5 w-3.5" />
+          <span key={crumb.href} className="flex items-center gap-1.5">
+            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60" />
             {isLast ? (
               <span className="font-medium text-foreground">{crumb.label}</span>
             ) : (
