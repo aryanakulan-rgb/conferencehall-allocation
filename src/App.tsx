@@ -11,6 +11,7 @@ import HallManagement from "./pages/HallManagement";
 import CalendarPage from "./pages/CalendarPage";
 import MyBookings from "./pages/MyBookings";
 import AdminBookings from "./pages/AdminBookings";
+import BookRoom from "./pages/BookRoom";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,11 @@ function AppRoutes() {
       <Route path="/my-bookings" element={
         <ProtectedRoute>
           <MyBookings />
+        </ProtectedRoute>
+      } />
+      <Route path="/book-room" element={
+        <ProtectedRoute>
+          <BookRoom />
         </ProtectedRoute>
       } />
       <Route path="/bookings" element={

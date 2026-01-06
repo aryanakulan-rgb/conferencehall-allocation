@@ -6,7 +6,8 @@ import {
   Building, 
   ClipboardList, 
   Settings,
-  ChevronRight
+  ChevronRight,
+  CalendarPlus
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -19,6 +20,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'user'] },
+  { title: 'Book Room', href: '/book-room', icon: CalendarPlus, roles: ['user'] },
   { title: 'Calendar', href: '/calendar', icon: Calendar, roles: ['admin', 'user'] },
   { title: 'Halls', href: '/halls', icon: Building, roles: ['admin', 'user'] },
   { title: 'My Bookings', href: '/my-bookings', icon: ClipboardList, roles: ['user'] },
