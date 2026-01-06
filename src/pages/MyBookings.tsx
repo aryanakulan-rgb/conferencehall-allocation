@@ -3,7 +3,8 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
-import { useUserBookings, useCancelBooking, Booking, BookingStatus } from '@/hooks/useBookings';
+import { EditBookingDialog } from '@/components/booking/EditBookingDialog';
+import { useUserBookings, useCancelBooking, useUpdateBooking, Booking, BookingStatus } from '@/hooks/useBookings';
 import { useHalls } from '@/hooks/useHalls';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,7 +20,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
-import { Calendar, Clock, Plus, AlertCircle, X } from 'lucide-react';
+import { Calendar, Clock, Plus, AlertCircle, X, Pencil } from 'lucide-react';
 import { BackButton } from '@/components/navigation/BackButton';
 
 export default function MyBookings() {
@@ -27,10 +28,13 @@ export default function MyBookings() {
   const navigate = useNavigate();
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   const { data: bookings = [], isLoading: bookingsLoading } = useUserBookings();
   const { data: halls = [], isLoading: hallsLoading } = useHalls();
   const cancelBooking = useCancelBooking();
+  const updateBooking = useUpdateBooking();
 
   const isLoading = bookingsLoading || hallsLoading;
 
@@ -54,6 +58,27 @@ export default function MyBookings() {
       setCancelDialogOpen(false);
       setBookingToCancel(null);
     }
+  };
+
+  const handleEditClick = (booking: Booking) => {
+    setEditingBooking(booking);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveBooking = (data: {
+    bookingId: string;
+    hallId: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    purpose: string;
+  }) => {
+    updateBooking.mutate(data, {
+      onSuccess: () => {
+        setEditDialogOpen(false);
+        setEditingBooking(null);
+      },
+    });
   };
 
   const BookingCard = ({ booking }: { booking: Booking }) => (
@@ -90,15 +115,26 @@ export default function MyBookings() {
         </span>
         
         {booking.status === 'pending' && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={() => handleCancelClick(booking)}
-          >
-            <X className="h-4 w-4 mr-1" />
-            Cancel
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-primary hover:text-primary hover:bg-primary/10"
+              onClick={() => handleEditClick(booking)}
+            >
+              <Pencil className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              onClick={() => handleCancelClick(booking)}
+            >
+              <X className="h-4 w-4 mr-1" />
+              Cancel
+            </Button>
+          </div>
         )}
       </div>
     </div>
@@ -208,6 +244,15 @@ export default function MyBookings() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        <EditBookingDialog
+          booking={editingBooking}
+          halls={halls}
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          onSave={handleSaveBooking}
+          isSubmitting={updateBooking.isPending}
+        />
       </div>
     </DashboardLayout>
   );
