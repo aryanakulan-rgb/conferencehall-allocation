@@ -5,8 +5,6 @@ import {
   Calendar, 
   Building, 
   ClipboardList, 
-  FileText, 
-  Users, 
   Settings,
   ChevronRight
 } from 'lucide-react';
@@ -25,9 +23,7 @@ const navItems: NavItem[] = [
   { title: 'Halls', href: '/halls', icon: Building, roles: ['admin', 'user'] },
   { title: 'My Bookings', href: '/my-bookings', icon: ClipboardList, roles: ['user'] },
   { title: 'All Bookings', href: '/bookings', icon: ClipboardList, roles: ['admin'] },
-  { title: 'Reports', href: '/reports', icon: FileText, roles: ['admin'] },
-  { title: 'Users', href: '/users', icon: Users, roles: ['admin'] },
-  { title: 'Settings', href: '/settings', icon: Settings, roles: ['admin'] },
+  { title: 'Hall Management', href: '/hall-management', icon: Settings, roles: ['admin'] },
 ];
 
 export function Sidebar() {

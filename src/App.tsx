@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Halls from "./pages/Halls";
+import HallManagement from "./pages/HallManagement";
 import CalendarPage from "./pages/CalendarPage";
 import MyBookings from "./pages/MyBookings";
 import AdminBookings from "./pages/AdminBookings";
@@ -55,6 +56,11 @@ function AppRoutes() {
       <Route path="/bookings" element={
         <ProtectedRoute adminOnly>
           <AdminBookings />
+        </ProtectedRoute>
+      } />
+      <Route path="/hall-management" element={
+        <ProtectedRoute adminOnly>
+          <HallManagement />
         </ProtectedRoute>
       } />
       <Route path="*" element={<NotFound />} />
