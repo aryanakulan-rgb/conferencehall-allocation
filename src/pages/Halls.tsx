@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Search, Building } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BackButton } from '@/components/navigation/BackButton';
 
 export default function Halls() {
   const { user } = useAuth();
@@ -78,6 +79,7 @@ export default function Halls() {
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
+        <BackButton className="mb-4" />
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-foreground">Conference Halls</h1>

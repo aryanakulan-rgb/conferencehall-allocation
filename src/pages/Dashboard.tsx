@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { BackButton } from '@/components/navigation/BackButton';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -72,6 +73,7 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in">
+        <BackButton className="mb-4" />
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

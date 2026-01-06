@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
 import { Calendar, Clock, Plus, AlertCircle, X } from 'lucide-react';
+import { BackButton } from '@/components/navigation/BackButton';
 
 export default function MyBookings() {
   const { user } = useAuth();
@@ -127,6 +128,7 @@ export default function MyBookings() {
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
+        <BackButton className="mb-4" />
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">My Bookings</h1>

@@ -4,6 +4,7 @@ import { GoogleCalendarView } from '@/components/booking/GoogleCalendarView';
 import { useBookings, useUserBookings } from '@/hooks/useBookings';
 import { useHalls } from '@/hooks/useHalls';
 import { Skeleton } from '@/components/ui/skeleton';
+import { BackButton } from '@/components/navigation/BackButton';
 
 export default function CalendarPage() {
   const { user } = useAuth();
@@ -33,6 +34,7 @@ export default function CalendarPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
+        <BackButton className="mb-4" />
         <div>
           <h1 className="text-2xl font-bold text-foreground">Booking Calendar</h1>
           <p className="text-muted-foreground">

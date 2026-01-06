@@ -29,6 +29,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
 import { Search, CheckCircle, XCircle, Eye } from 'lucide-react';
+import { BackButton } from '@/components/navigation/BackButton';
 
 export default function AdminBookings() {
   const { user } = useAuth();
@@ -184,6 +185,7 @@ export default function AdminBookings() {
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
+        <BackButton className="mb-4" />
         <div>
           <h1 className="text-2xl font-bold text-foreground">All Bookings</h1>
           <p className="text-muted-foreground">
