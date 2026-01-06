@@ -1,16 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Hall } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { format } from 'date-fns';
-import { CalendarIcon, Clock, Send } from 'lucide-react';
+import { CalendarIcon, Clock, Send, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { checkBookingConflict } from '@/hooks/useBookings';
 
 interface BookingFormProps {
   halls: Hall[];
@@ -41,9 +42,54 @@ export function BookingForm({ halls, selectedHall, onSubmit, onCancel, isSubmitt
   const [endTime, setEndTime] = useState('');
   const [purpose, setPurpose] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [conflictStatus, setConflictStatus] = useState<'idle' | 'checking' | 'conflict' | 'available'>('idle');
+  const [conflictMessage, setConflictMessage] = useState('');
 
   const activeHalls = halls.filter(h => h.is_active);
   const isPending = externalIsSubmitting ?? isSubmitting;
+
+  // Check for conflicts when hall, date, or time changes
+  useEffect(() => {
+    const checkConflict = async () => {
+      if (!hallId || !date || !startTime || !endTime) {
+        setConflictStatus('idle');
+        return;
+      }
+
+      if (startTime >= endTime) {
+        setConflictStatus('idle');
+        return;
+      }
+
+      setConflictStatus('checking');
+      
+      try {
+        const dateStr = date.toISOString().split('T')[0];
+        const { hasConflict, conflictingBooking } = await checkBookingConflict(
+          hallId,
+          dateStr,
+          startTime,
+          endTime
+        );
+
+        if (hasConflict) {
+          setConflictStatus('conflict');
+          setConflictMessage(
+            `Conflicts with ${conflictingBooking?.status} booking (${conflictingBooking?.start_time} - ${conflictingBooking?.end_time})`
+          );
+        } else {
+          setConflictStatus('available');
+          setConflictMessage('');
+        }
+      } catch (error) {
+        console.error('Error checking conflict:', error);
+        setConflictStatus('idle');
+      }
+    };
+
+    const debounceTimer = setTimeout(checkConflict, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [hallId, date, startTime, endTime]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,11 +104,12 @@ export function BookingForm({ halls, selectedHall, onSubmit, onCancel, isSubmitt
       return;
     }
 
+    if (conflictStatus === 'conflict') {
+      toast.error('Cannot submit: Time slot has a conflict');
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
     onSubmit({ hallId, date, startTime, endTime, purpose: purpose.trim() });
     setIsSubmitting(false);
   };
@@ -148,6 +195,28 @@ export function BookingForm({ halls, selectedHall, onSubmit, onCancel, isSubmitt
         </div>
       </div>
 
+      {/* Conflict Status Alert */}
+      {conflictStatus === 'checking' && (
+        <Alert className="border-muted">
+          <Clock className="h-4 w-4 animate-spin" />
+          <AlertDescription>Checking availability...</AlertDescription>
+        </Alert>
+      )}
+      
+      {conflictStatus === 'conflict' && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>{conflictMessage}</AlertDescription>
+        </Alert>
+      )}
+      
+      {conflictStatus === 'available' && (
+        <Alert className="border-success bg-success/10">
+          <CheckCircle2 className="h-4 w-4 text-success" />
+          <AlertDescription className="text-success">Time slot is available!</AlertDescription>
+        </Alert>
+      )}
+
       <div className="space-y-2">
         <Label htmlFor="purpose">Purpose of Booking *</Label>
         <Textarea
@@ -167,7 +236,12 @@ export function BookingForm({ halls, selectedHall, onSubmit, onCancel, isSubmitt
         <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" variant="accent" className="flex-1" disabled={isPending}>
+        <Button 
+          type="submit" 
+          variant="accent" 
+          className="flex-1" 
+          disabled={isPending || conflictStatus === 'conflict' || conflictStatus === 'checking'}
+        >
           <Send className="mr-2 h-4 w-4" />
           {isPending ? 'Submitting...' : 'Submit Request'}
         </Button>
