@@ -39,9 +39,9 @@ export function Sidebar() {
 
   const filteredItems = navItems.filter(item => item.roles.includes(user.role));
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const handleLogout = async () => {
+    await logout();
+    navigate('/', { replace: true });
   };
 
   return (
