@@ -148,6 +148,28 @@ export function useCreateBooking() {
   });
 }
 
+export function useCancelBooking() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (bookingId: string) => {
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('id', bookingId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      toast.success('Booking cancelled successfully');
+    },
+    onError: (error) => {
+      toast.error('Failed to cancel booking: ' + error.message);
+    },
+  });
+}
+
 export function useUpdateBookingStatus() {
   const queryClient = useQueryClient();
 

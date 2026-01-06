@@ -1,21 +1,35 @@
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
-import { useUserBookings, Booking, BookingStatus } from '@/hooks/useBookings';
+import { useUserBookings, useCancelBooking, Booking, BookingStatus } from '@/hooks/useBookings';
 import { useHalls } from '@/hooks/useHalls';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
-import { Calendar, Clock, Plus, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, Plus, AlertCircle, X } from 'lucide-react';
 
 export default function MyBookings() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
 
   const { data: bookings = [], isLoading: bookingsLoading } = useUserBookings();
   const { data: halls = [], isLoading: hallsLoading } = useHalls();
+  const cancelBooking = useCancelBooking();
 
   const isLoading = bookingsLoading || hallsLoading;
 
@@ -26,6 +40,19 @@ export default function MyBookings() {
   const filterBookings = (status: BookingStatus | 'all') => {
     if (status === 'all') return bookings;
     return bookings.filter(b => b.status === status);
+  };
+
+  const handleCancelClick = (booking: Booking) => {
+    setBookingToCancel(booking);
+    setCancelDialogOpen(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    if (bookingToCancel) {
+      await cancelBooking.mutateAsync(bookingToCancel.id);
+      setCancelDialogOpen(false);
+      setBookingToCancel(null);
+    }
   };
 
   const BookingCard = ({ booking }: { booking: Booking }) => (
@@ -56,8 +83,22 @@ export default function MyBookings() {
         </div>
       )}
 
-      <div className="text-xs text-muted-foreground mt-4 pt-3 border-t border-border">
-        Requested on {format(new Date(booking.created_at), 'MMM d, yyyy')}
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+        <span className="text-xs text-muted-foreground">
+          Requested on {format(new Date(booking.created_at), 'MMM d, yyyy')}
+        </span>
+        
+        {booking.status === 'pending' && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={() => handleCancelClick(booking)}
+          >
+            <X className="h-4 w-4 mr-1" />
+            Cancel
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -143,6 +184,28 @@ export default function MyBookings() {
             </TabsContent>
           ))}
         </Tabs>
+
+        {/* Cancel Confirmation Dialog */}
+        <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Cancel Booking</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to cancel this booking request for "{bookingToCancel?.purpose}"? 
+                This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Keep Booking</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleConfirmCancel}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {cancelBooking.isPending ? 'Cancelling...' : 'Cancel Booking'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </DashboardLayout>
   );
