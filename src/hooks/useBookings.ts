@@ -243,7 +243,14 @@ export function useUpdateBooking() {
         );
       }
 
-      const { data, error } = await supabase
+      // Check if user is admin
+      const { data: roleData } = await supabase
+        .rpc('get_user_role', { _user_id: user.id });
+      
+      const isAdmin = roleData === 'admin';
+
+      // Build the update query
+      let query = supabase
         .from('bookings')
         .update({
           hall_id: hallId,
@@ -252,11 +259,14 @@ export function useUpdateBooking() {
           end_time: endTime,
           purpose,
         })
-        .eq('id', bookingId)
-        .eq('user_id', user.id)
-        .eq('status', 'pending')
-        .select()
-        .single();
+        .eq('id', bookingId);
+
+      // Admins can update any booking, users can only update their own pending bookings
+      if (!isAdmin) {
+        query = query.eq('user_id', user.id).eq('status', 'pending');
+      }
+
+      const { data, error } = await query.select().single();
 
       if (error) throw error;
       return data;
