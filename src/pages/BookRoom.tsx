@@ -11,6 +11,7 @@ import { Users, Monitor, Wifi, Projector, CheckCircle2, Building2 } from 'lucide
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { BackButton } from '@/components/navigation/BackButton';
 
 const facilityIcons: Record<string, React.ReactNode> = {
   'Projector': <Projector className="h-4 w-4" />,
@@ -77,6 +78,7 @@ export default function BookRoom() {
   return (
     <DashboardLayout>
       <div className="space-y-8 animate-fade-in">
+        <BackButton className="mb-4" />
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-foreground">Book a Room</h1>
