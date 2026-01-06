@@ -2,6 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Home, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Breadcrumbs } from './Breadcrumbs';
 
 interface AdminTopBarProps {
   className?: string;
@@ -29,36 +30,42 @@ export function AdminTopBar({ className }: AdminTopBarProps) {
   };
 
   return (
-    <div className={`flex items-center justify-between gap-2 py-2 ${className || ''}`}>
-      <div className="flex items-center gap-2">
+    <div className={`space-y-2 ${className || ''}`}>
+      {/* Breadcrumbs */}
+      <Breadcrumbs />
+      
+      {/* Action buttons */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleBack}
+            className="gap-1.5"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Back</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleHome}
+            className="gap-1.5"
+          >
+            <Home className="h-4 w-4" />
+            <span className="hidden sm:inline">Home</span>
+          </Button>
+        </div>
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
-          onClick={handleBack}
-          className="gap-1.5"
+          onClick={handleLogout}
+          className="gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10"
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="hidden sm:inline">Back</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleHome}
-          className="gap-1.5"
-        >
-          <Home className="h-4 w-4" />
-          <span className="hidden sm:inline">Home</span>
+          <LogOut className="h-4 w-4" />
+          <span className="hidden sm:inline">Logout</span>
         </Button>
       </div>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleLogout}
-        className="gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10"
-      >
-        <LogOut className="h-4 w-4" />
-        <span className="hidden sm:inline">Logout</span>
-      </Button>
     </div>
   );
 }
