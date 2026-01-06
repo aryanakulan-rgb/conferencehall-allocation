@@ -82,6 +82,8 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   };
 
   const canEditBooking = (booking: Booking) => {
+    // Admin can edit any booking, users can only edit their own pending bookings
+    if (isAdmin) return true;
     return booking.user_id === user?.id && booking.status === 'pending';
   };
 
