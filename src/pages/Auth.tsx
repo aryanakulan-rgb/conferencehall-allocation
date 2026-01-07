@@ -7,17 +7,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { Building2, ArrowRight, User, Mail, Lock } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Building2, ArrowRight, Mail, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { useSections } from '@/hooks/useSections';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
-const nameSchema = z.string().min(2, 'Name must be at least 2 characters');
+const sectionSchema = z.string().min(1, 'Please select a section');
 
 export default function Auth() {
   const navigate = useNavigate();
   const { login, signup, isAuthenticated, isLoading } = useAuth();
+  const { data: sections } = useSections();
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -53,7 +56,7 @@ export default function Auth() {
 
     if (activeTab === 'signup') {
       try {
-        nameSchema.parse(name);
+        sectionSchema.parse(name);
       } catch (e) {
         if (e instanceof z.ZodError) {
           newErrors.name = e.errors[0].message;
@@ -231,19 +234,19 @@ export default function Auth() {
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Section</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="Enter your section"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
+                  <Label htmlFor="signup-section">Section</Label>
+                  <Select value={name} onValueChange={setName}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select your section" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-popover z-50">
+                      {sections?.map((section) => (
+                        <SelectItem key={section.id} value={section.name}>
+                          {section.name} ({section.code})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                 </div>
 
