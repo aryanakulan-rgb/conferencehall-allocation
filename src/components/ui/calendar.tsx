@@ -4,10 +4,24 @@ import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { isHoliday, isSunday, getHolidayName } from "@/lib/indianHolidays";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
-function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
+function Calendar({ className, classNames, showOutsideDays = true, modifiers, modifiersClassNames, ...props }: CalendarProps) {
+  // Combine user modifiers with holiday modifiers
+  const combinedModifiers = {
+    ...modifiers,
+    holiday: (date: Date) => isHoliday(date),
+    sunday: (date: Date) => isSunday(date),
+  };
+
+  const combinedModifiersClassNames = {
+    ...modifiersClassNames,
+    holiday: "text-destructive font-semibold",
+    sunday: "text-destructive",
+  };
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -41,9 +55,19 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         day_hidden: "invisible",
         ...classNames,
       }}
+      modifiers={combinedModifiers}
+      modifiersClassNames={combinedModifiersClassNames}
       components={{
         IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
+        DayContent: ({ date }) => {
+          const holidayName = getHolidayName(date);
+          return (
+            <span title={holidayName || undefined}>
+              {date.getDate()}
+            </span>
+          );
+        },
       }}
       {...props}
     />
