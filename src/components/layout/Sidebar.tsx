@@ -31,6 +31,7 @@ const navItems: NavItem[] = [
   { title: 'Halls', href: '/halls', icon: Building, roles: ['admin', 'user'] },
   { title: 'My Bookings', href: '/my-bookings', icon: ClipboardList, roles: ['user'] },
   { title: 'All Bookings', href: '/bookings', icon: ClipboardList, roles: ['admin'] },
+  { title: 'Booking Calendar', href: '/admin-calendar', icon: Calendar, roles: ['admin'] },
   { title: 'Hall Management', href: '/hall-management', icon: Settings, roles: ['admin'] },
 ];
 

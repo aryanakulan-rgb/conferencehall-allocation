@@ -12,6 +12,7 @@ import HallManagement from "./pages/HallManagement";
 import CalendarPage from "./pages/CalendarPage";
 import MyBookings from "./pages/MyBookings";
 import AdminBookings from "./pages/AdminBookings";
+import AdminCalendar from "./pages/AdminCalendar";
 import BookRoom from "./pages/BookRoom";
 import NotFound from "./pages/NotFound";
 
@@ -72,6 +73,11 @@ function AppRoutes() {
       <Route path="/bookings" element={
         <ProtectedRoute adminOnly>
           <AdminBookings />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin-calendar" element={
+        <ProtectedRoute adminOnly>
+          <AdminCalendar />
         </ProtectedRoute>
       } />
       <Route path="/hall-management" element={
