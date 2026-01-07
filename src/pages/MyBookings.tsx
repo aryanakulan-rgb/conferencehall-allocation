@@ -184,7 +184,7 @@ export default function MyBookings() {
               All ({bookings.length})
             </TabsTrigger>
             <TabsTrigger value="pending">
-              Pending ({filterBookings('pending').length})
+              Booked ({filterBookings('pending').length})
             </TabsTrigger>
             <TabsTrigger value="rejected">
               Rejected ({filterBookings('rejected').length})
