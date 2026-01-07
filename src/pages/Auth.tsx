@@ -231,13 +231,13 @@ export default function Auth() {
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
+                  <Label htmlFor="signup-name">Section</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="signup-name"
                       type="text"
-                      placeholder="Enter your full name"
+                      placeholder="Enter your section"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="pl-10"
