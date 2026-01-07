@@ -1,7 +1,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { GoogleCalendarView } from '@/components/booking/GoogleCalendarView';
-import { useBookings, useUserBookings } from '@/hooks/useBookings';
+import { useBookings } from '@/hooks/useBookings';
 import { useHalls } from '@/hooks/useHalls';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BackButton } from '@/components/navigation/BackButton';
@@ -9,13 +9,10 @@ import { BackButton } from '@/components/navigation/BackButton';
 export default function CalendarPage() {
   const { user } = useAuth();
   
-  const { data: allBookings = [], isLoading: allBookingsLoading } = useBookings();
-  const { data: userBookings = [], isLoading: userBookingsLoading } = useUserBookings();
+  const { data: bookings = [], isLoading: bookingsLoading } = useBookings();
   const { data: halls = [], isLoading: hallsLoading } = useHalls();
 
-  const isAdmin = user?.role === 'admin';
-  const bookings = isAdmin ? allBookings : userBookings;
-  const isLoading = hallsLoading || (isAdmin ? allBookingsLoading : userBookingsLoading);
+  const isLoading = hallsLoading || bookingsLoading;
 
   if (isLoading) {
     return (
