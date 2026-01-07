@@ -16,6 +16,7 @@ import { checkBookingConflict } from '@/hooks/useBookings';
 interface BookingFormProps {
   halls: Hall[];
   selectedHall?: Hall;
+  preselectedDate?: Date;
   onSubmit: (data: BookingFormData) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
@@ -35,9 +36,9 @@ const timeSlots = [
   '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
 ];
 
-export function BookingForm({ halls, selectedHall, onSubmit, onCancel, isSubmitting: externalIsSubmitting }: BookingFormProps) {
+export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, onCancel, isSubmitting: externalIsSubmitting }: BookingFormProps) {
   const [hallId, setHallId] = useState(selectedHall?.id || '');
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date | undefined>(preselectedDate);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [purpose, setPurpose] = useState('');
