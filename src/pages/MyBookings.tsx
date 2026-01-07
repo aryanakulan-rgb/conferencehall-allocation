@@ -186,15 +186,12 @@ export default function MyBookings() {
             <TabsTrigger value="pending">
               Pending ({filterBookings('pending').length})
             </TabsTrigger>
-            <TabsTrigger value="approved">
-              Approved ({filterBookings('approved').length})
-            </TabsTrigger>
             <TabsTrigger value="rejected">
               Rejected ({filterBookings('rejected').length})
             </TabsTrigger>
           </TabsList>
 
-          {(['all', 'pending', 'approved', 'rejected'] as const).map((status) => (
+          {(['all', 'pending', 'rejected'] as const).map((status) => (
             <TabsContent key={status} value={status}>
               {filterBookings(status).length === 0 ? (
                 <div className="text-center py-12 rounded-xl border bg-card">

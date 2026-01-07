@@ -171,7 +171,7 @@ export default function Dashboard() {
         ) : (
           <>
             {/* Stats Grid for Users */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <StatCard
                 title="My Bookings"
                 value={bookings.length}
@@ -185,13 +185,6 @@ export default function Dashboard() {
                 subtitle="Awaiting approval"
                 icon={Clock}
                 variant="warning"
-              />
-              <StatCard
-                title="Approved"
-                value={approvedCount}
-                subtitle="Confirmed bookings"
-                icon={CheckCircle}
-                variant="success"
               />
               <StatCard
                 title="Rejected"
