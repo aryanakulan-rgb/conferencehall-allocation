@@ -241,7 +241,7 @@ export default function Auth() {
                     </SelectTrigger>
                     <SelectContent className="bg-popover z-50">
                       {sections?.map((section) => (
-                        <SelectItem key={section.id} value={section.name}>
+                        <SelectItem key={section.id} value={section.id}>
                           {section.name} ({section.code})
                         </SelectItem>
                       ))}

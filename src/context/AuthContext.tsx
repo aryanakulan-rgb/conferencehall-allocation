@@ -108,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null };
   };
 
-  const signup = async (email: string, password: string, name: string): Promise<{ error: string | null }> => {
+  const signup = async (email: string, password: string, sectionId: string): Promise<{ error: string | null }> => {
     const redirectUrl = `${window.location.origin}/`;
 
     const { error } = await supabase.auth.signUp({
@@ -117,7 +117,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       options: {
         emailRedirectTo: redirectUrl,
         data: {
-          name,
+          name: email, // Use email as name, section is linked via section_id
+          section_id: sectionId,
         },
       },
     });
