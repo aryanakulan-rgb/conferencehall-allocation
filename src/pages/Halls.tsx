@@ -134,7 +134,11 @@ export default function Halls() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredHalls.map((hall) => (
+            {[...filteredHalls].sort((a, b) => {
+              if (a.type === 'mini' && b.type !== 'mini') return -1;
+              if (a.type !== 'mini' && b.type === 'mini') return 1;
+              return 0;
+            }).map((hall) => (
               <HallCard
                 key={hall.id}
                 hall={hall}
