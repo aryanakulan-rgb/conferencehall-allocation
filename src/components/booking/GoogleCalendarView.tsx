@@ -243,19 +243,27 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
 
               {/* Event Bars */}
               <div className="space-y-0.5">
-                {dayBookings.slice(0, maxVisibleBookings).map((booking) => (
-                  <div
-                    key={booking.id}
-                    className={cn(
-                      "text-xs px-1.5 py-0.5 rounded truncate font-medium",
-                      getStatusColor(booking.status)
-                    )}
-                    title={`${booking.purpose} (${booking.start_time} - ${booking.end_time})`}
-                  >
-                    <span className="hidden sm:inline">{booking.start_time} </span>
-                    <span className="truncate">{booking.purpose}</span>
-                  </div>
-                ))}
+                {dayBookings.slice(0, maxVisibleBookings).map((booking) => {
+                  const profile = profiles.find(p => p.id === booking.user_id);
+                  const sectionName = profile?.section_id 
+                    ? sections.find(s => s.id === profile.section_id)?.name 
+                    : null;
+                  const bookerInfo = profile?.name || 'Unknown';
+                  
+                  return (
+                    <div
+                      key={booking.id}
+                      className={cn(
+                        "text-xs px-1.5 py-0.5 rounded truncate font-medium",
+                        getStatusColor(booking.status)
+                      )}
+                      title={`${booking.purpose} - ${bookerInfo}${sectionName ? ` (${sectionName})` : ''} | ${booking.start_time} - ${booking.end_time}`}
+                    >
+                      <span className="hidden sm:inline">{booking.start_time} </span>
+                      <span className="truncate">{bookerInfo}</span>
+                    </div>
+                  );
+                })}
                 {hiddenCount > 0 && (
                   <div className="text-xs text-muted-foreground px-1.5 font-medium">
                     +{hiddenCount} more
