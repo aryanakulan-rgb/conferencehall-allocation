@@ -4,7 +4,7 @@ import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { isHoliday, isSunday, getHolidayName } from "@/lib/indianHolidays";
+import { isHoliday, isSunday, isSecondSaturday, getHolidayName } from "@/lib/indianHolidays";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -14,12 +14,14 @@ function Calendar({ className, classNames, showOutsideDays = true, modifiers, mo
     ...modifiers,
     holiday: (date: Date) => isHoliday(date),
     sunday: (date: Date) => isSunday(date),
+    secondSaturday: (date: Date) => isSecondSaturday(date),
   };
 
   const combinedModifiersClassNames = {
     ...modifiersClassNames,
     holiday: "text-destructive font-semibold",
     sunday: "text-destructive",
+    secondSaturday: "text-destructive",
   };
 
   return (
@@ -62,8 +64,10 @@ function Calendar({ className, classNames, showOutsideDays = true, modifiers, mo
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
         DayContent: ({ date }) => {
           const holidayName = getHolidayName(date);
+          const is2ndSat = isSecondSaturday(date);
+          const tooltipText = holidayName || (is2ndSat ? '2nd Saturday' : undefined);
           return (
-            <span title={holidayName || undefined}>
+            <span title={tooltipText}>
               {date.getDate()}
             </span>
           );
