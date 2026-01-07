@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isWithinInterval, subDays } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { AdminTopBar } from "@/components/navigation/AdminTopBar";
 import { useBookings } from "@/hooks/useBookings";
@@ -12,11 +13,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const AdminCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedHallId, setSelectedHallId] = useState<string>("all");
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   
   const { data: bookings = [], isLoading: bookingsLoading } = useBookings();
   const { data: halls = [], isLoading: hallsLoading } = useHalls();
@@ -48,10 +53,27 @@ const AdminCalendar = () => {
     }
   };
 
-  // Filter bookings by selected hall
-  const filteredBookings = selectedHallId === "all" 
-    ? bookings 
-    : bookings.filter(b => b.hall_id === selectedHallId);
+  // Filter bookings by selected hall and date range
+  const filteredBookings = bookings.filter(b => {
+    const hallMatch = selectedHallId === "all" || b.hall_id === selectedHallId;
+    const bookingDate = new Date(b.date);
+    
+    let dateMatch = true;
+    if (startDate && endDate) {
+      dateMatch = isWithinInterval(bookingDate, { start: startDate, end: endDate });
+    } else if (startDate) {
+      dateMatch = bookingDate >= startDate;
+    } else if (endDate) {
+      dateMatch = bookingDate <= endDate;
+    }
+    
+    return hallMatch && dateMatch;
+  });
+
+  const clearDateFilter = () => {
+    setStartDate(undefined);
+    setEndDate(undefined);
+  };
 
   // Get bookings for the selected date
   const selectedDateBookings = filteredBookings.filter(booking => 
@@ -84,19 +106,81 @@ const AdminCalendar = () => {
     <DashboardLayout>
       <AdminTopBar />
       <div className="p-6 space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold">Booking Calendar Overview</h1>
-          <Select value={selectedHallId} onValueChange={setSelectedHallId}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Filter by Hall" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Halls</SelectItem>
-              {halls.filter(h => h.is_active).map(hall => (
-                <SelectItem key={hall.id} value={hall.id}>{hall.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          
+          {/* Filters Row */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Select value={selectedHallId} onValueChange={setSelectedHallId}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by Hall" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Halls</SelectItem>
+                {halls.filter(h => h.is_active).map(hall => (
+                  <SelectItem key={hall.id} value={hall.id}>{hall.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {/* Start Date Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-[160px] justify-start text-left font-normal",
+                    !startDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {startDate ? format(startDate, "MMM d, yyyy") : "Start date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+
+            <span className="text-muted-foreground">to</span>
+
+            {/* End Date Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-[160px] justify-start text-left font-normal",
+                    !endDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? format(endDate, "MMM d, yyyy") : "End date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+
+            {(startDate || endDate) && (
+              <Button variant="ghost" size="sm" onClick={clearDateFilter}>
+                Clear dates
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
