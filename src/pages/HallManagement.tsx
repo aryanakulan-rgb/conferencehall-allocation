@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useHalls, useCreateHall, useUpdateHall, useToggleHallStatus, Hall } from '@/hooks/useHalls';
 import { HallForm, HallFormData } from '@/components/admin/HallForm';
+import { SectionManagement } from '@/components/admin/SectionManagement';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -231,6 +232,9 @@ export default function HallManagement() {
             </TableBody>
           </Table>
         </div>
+
+        {/* Section Management */}
+        <SectionManagement />
       </div>
 
       {/* Create/Edit Dialog */}
