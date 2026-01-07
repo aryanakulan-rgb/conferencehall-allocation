@@ -8,10 +8,14 @@ import {
   Settings,
   ChevronRight,
   CalendarPlus,
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface NavItem {
   title: string;
@@ -30,7 +34,7 @@ const navItems: NavItem[] = [
   { title: 'Hall Management', href: '/hall-management', icon: Settings, roles: ['admin'] },
 ];
 
-export function Sidebar() {
+function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -44,8 +48,12 @@ export function Sidebar() {
     navigate('/', { replace: true });
   };
 
+  const handleClick = () => {
+    onNavigate?.();
+  };
+
   return (
-    <aside className="hidden lg:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
+    <>
       <nav className="flex-1 p-4 space-y-1">
         {filteredItems.map((item) => {
           const Icon = item.icon;
@@ -55,6 +63,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               to={item.href}
+              onClick={handleClick}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
                 isActive
@@ -85,6 +94,41 @@ export function Sidebar() {
           Logout
         </Button>
       </div>
+    </>
+  );
+}
+
+export function Sidebar() {
+  const { user } = useAuth();
+
+  if (!user) return null;
+
+  return (
+    <aside className="hidden lg:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
+      <SidebarContent />
     </aside>
+  );
+}
+
+export function MobileSidebar() {
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+
+  if (!user) return null;
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="lg:hidden">
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-64 p-0 bg-sidebar border-sidebar-border">
+        <div className="flex flex-col h-full">
+          <SidebarContent onNavigate={() => setOpen(false)} />
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

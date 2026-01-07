@@ -2,6 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Building2, LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { MobileSidebar } from './Sidebar';
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -16,6 +17,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-3">
+          {user && <MobileSidebar />}
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
             <Building2 className="h-6 w-6 text-primary-foreground" />
           </div>
@@ -36,7 +38,7 @@ export function Header() {
                 <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden sm:flex">
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline ml-2">Logout</span>
             </Button>
