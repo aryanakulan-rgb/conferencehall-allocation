@@ -27,10 +27,6 @@ export default function BookRoom() {
   const { data: halls = [], isLoading } = useActiveHalls();
   const createBooking = useCreateBooking();
 
-  // Separate halls by type
-  const mainHalls = halls.filter(h => h.type === 'conference');
-  const miniHalls = halls.filter(h => h.type === 'mini');
-
   const handleSelectHall = (hall: Hall) => {
     setSelectedHall(hall);
     setShowForm(true);
@@ -89,55 +85,25 @@ export default function BookRoom() {
 
         {!showForm ? (
           <>
-            {/* Main Conference Halls */}
+            {/* All Conference Halls */}
             <section className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-1 bg-primary rounded-full" />
-                <h2 className="text-lg font-semibold text-foreground">Main Conference Halls</h2>
+                <h2 className="text-lg font-semibold text-foreground">Available Conference Halls</h2>
                 <Badge variant="secondary" className="ml-2">
-                  {mainHalls.length} available
+                  {halls.length} available
                 </Badge>
               </div>
               
-              {mainHalls.length === 0 ? (
+              {halls.length === 0 ? (
                 <Card className="border-dashed">
                   <CardContent className="py-8 text-center text-muted-foreground">
-                    No main conference halls available
+                    No conference halls available
                   </CardContent>
                 </Card>
               ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {mainHalls.map((hall) => (
-                    <HallSelectionCard
-                      key={hall.id}
-                      hall={hall}
-                      isSelected={selectedHall?.id === hall.id}
-                      onSelect={() => handleSelectHall(hall)}
-                    />
-                  ))}
-                </div>
-              )}
-            </section>
-
-            {/* Mini Conference Halls */}
-            <section className="space-y-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-info rounded-full" />
-                <h2 className="text-lg font-semibold text-foreground">Mini Conference Halls</h2>
-                <Badge variant="secondary" className="ml-2">
-                  {miniHalls.length} available
-                </Badge>
-              </div>
-              
-              {miniHalls.length === 0 ? (
-                <Card className="border-dashed">
-                  <CardContent className="py-8 text-center text-muted-foreground">
-                    No mini conference halls available
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {miniHalls.map((hall) => (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {halls.map((hall) => (
                     <HallSelectionCard
                       key={hall.id}
                       hall={hall}
