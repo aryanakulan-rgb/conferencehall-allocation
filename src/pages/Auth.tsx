@@ -27,7 +27,34 @@ export default function Auth() {
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; name?: string }>({});
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      emailSchema.parse(email);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setErrors({ email: err.errors[0].message });
+        return;
+      }
+    }
+    
+    setIsSubmitting(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success('Password reset link sent to your email!');
+      setIsForgotPassword(false);
+    }
+    setIsSubmitting(false);
+  };
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
@@ -142,6 +169,49 @@ export default function Auth() {
 
         {/* Auth Card */}
         <div className="bg-card rounded-2xl shadow-elevated p-8 border border-border">
+          {isForgotPassword ? (
+            <div className="space-y-4">
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-semibold text-foreground">Reset Password</h3>
+                <p className="text-sm text-muted-foreground">Enter your email to receive a reset link</p>
+              </div>
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reset-email">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                  {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                </div>
+                <Button 
+                  type="submit" 
+                  variant="accent" 
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Sending...' : 'Send Reset Link'}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full"
+                  onClick={() => setIsForgotPassword(false)}
+                >
+                  ← Back to Login
+                </Button>
+              </form>
+            </div>
+          ) : (
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="login">Login</TabsTrigger>
@@ -182,9 +252,16 @@ export default function Auth() {
                     />
                   </div>
                   {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPassword(true)}
+                    className="text-xs text-primary hover:underline"
+                  >
+                    Forgot Password?
+                  </button>
                 </div>
 
-                <Button 
+                <Button
                   type="submit" 
                   variant="accent" 
                   className="w-full"
@@ -331,6 +408,7 @@ export default function Auth() {
               </form>
             </TabsContent>
           </Tabs>
+          )}
 
           {/* Demo Credentials */}
           <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
