@@ -10,7 +10,7 @@ interface BookingStatusBadgeProps {
 export function BookingStatusBadge({ status, size = 'md' }: BookingStatusBadgeProps) {
   const config = {
     pending: {
-      label: 'Pending',
+      label: 'Booked',
       className: 'status-pending',
       icon: Clock,
     },
