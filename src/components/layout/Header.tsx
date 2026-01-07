@@ -3,10 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Building2, LogOut, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MobileSidebar } from './Sidebar';
+import { useSections } from '@/hooks/useSections';
 
 export function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { data: sections } = useSections();
+
+  const userSection = sections?.find(s => s.id === user?.sectionId);
 
   const handleLogout = async () => {
     await logout();
@@ -35,7 +39,9 @@ export function Header() {
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground">{user.name}</p>
-                <p className="text-xs text-muted-foreground capitalize">{user.role}</p>
+                <p className="text-xs text-muted-foreground">
+                  {userSection ? `${userSection.name} • ` : ''}<span className="capitalize">{user.role}</span>
+                </p>
               </div>
             </div>
             <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden sm:flex">
