@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useSearchParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { BookingForm, BookingFormData } from '@/components/booking/BookingForm';
 import { useActiveHalls, Hall } from '@/hooks/useHalls';
@@ -7,11 +8,12 @@ import { useCreateBooking } from '@/hooks/useBookings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Monitor, Wifi, Projector, CheckCircle2, Building2 } from 'lucide-react';
+import { Users, Monitor, Wifi, Projector, CheckCircle2, Building2, CalendarDays } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { BackButton } from '@/components/navigation/BackButton';
+import { format, parseISO } from 'date-fns';
 
 const facilityIcons: Record<string, React.ReactNode> = {
   'Projector': <Projector className="h-4 w-4" />,
@@ -21,11 +23,26 @@ const facilityIcons: Record<string, React.ReactNode> = {
 
 export default function BookRoom() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
   const [selectedHall, setSelectedHall] = useState<Hall | undefined>();
   const [showForm, setShowForm] = useState(false);
+  const [preselectedDate, setPreselectedDate] = useState<Date | undefined>();
 
   const { data: halls = [], isLoading } = useActiveHalls();
   const createBooking = useCreateBooking();
+
+  // Parse date from URL if present
+  useEffect(() => {
+    const dateParam = searchParams.get('date');
+    if (dateParam) {
+      try {
+        const parsedDate = parseISO(dateParam);
+        setPreselectedDate(parsedDate);
+      } catch (e) {
+        console.error('Invalid date parameter');
+      }
+    }
+  }, [searchParams]);
 
   const handleSelectHall = (hall: Hall) => {
     setSelectedHall(hall);
@@ -81,6 +98,12 @@ export default function BookRoom() {
           <p className="text-muted-foreground">
             Select a conference hall to submit a booking request
           </p>
+          {preselectedDate && (
+            <div className="flex items-center gap-2 mt-2 text-sm text-primary">
+              <CalendarDays className="h-4 w-4" />
+              <span>Selected date: {format(preselectedDate, 'EEEE, MMMM d, yyyy')}</span>
+            </div>
+          )}
         </div>
 
         {!showForm ? (
@@ -132,6 +155,7 @@ export default function BookRoom() {
                 <BookingForm
                   halls={halls}
                   selectedHall={selectedHall}
+                  preselectedDate={preselectedDate}
                   onSubmit={handleBookingSubmit}
                   onCancel={handleCancel}
                   isSubmitting={createBooking.isPending}

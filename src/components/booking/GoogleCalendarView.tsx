@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Booking, Hall, Profile, Section } from '@/types';
 import { 
   format, 
@@ -10,9 +11,11 @@ import {
   isSameMonth, 
   isSameDay,
   addMonths,
-  subMonths
+  subMonths,
+  isBefore,
+  startOfDay
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2, Pencil } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2, Pencil, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
@@ -34,14 +37,14 @@ const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export function GoogleCalendarView({ bookings, halls, profiles = [], sections = [], onDeleteBooking, onEditBooking }: GoogleCalendarViewProps) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [selectedHallId, setSelectedHallId] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  
   const activeHalls = halls.filter(h => h.is_active);
   const isAdmin = user?.role === 'admin';
-
   const getHallName = (hallId: string) => {
     return halls.find(h => h.id === hallId)?.name || 'Unknown Hall';
   };
@@ -125,11 +128,23 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const handleToday = () => setCurrentMonth(new Date());
 
-  const handleDateClick = (date: Date) => {
-    const dayBookings = getBookingsForDate(date);
-    if (dayBookings.length > 0) {
+  const handleDateClick = (date: Date, hasBookings: boolean) => {
+    const isPastDate = isBefore(startOfDay(date), startOfDay(new Date()));
+    
+    if (hasBookings) {
+      // Show bookings dialog if there are bookings
       setSelectedDate(date);
       setDialogOpen(true);
+    } else if (!isPastDate && !isAdmin) {
+      // Navigate to book room for future dates (users only)
+      navigate(`/book-room?date=${format(date, 'yyyy-MM-dd')}`);
+    }
+  };
+
+  const handleBookFromDialog = () => {
+    if (selectedDate) {
+      setDialogOpen(false);
+      navigate(`/book-room?date=${format(selectedDate, 'yyyy-MM-dd')}`);
     }
   };
 
@@ -197,15 +212,18 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
           const maxVisibleBookings = 3;
           const hiddenCount = dayBookings.length - maxVisibleBookings;
 
+          const isPastDate = isBefore(startOfDay(day), startOfDay(new Date()));
+          const isClickable = hasBookings || (!isPastDate && !isAdmin && isCurrentMonth);
+
           return (
             <div
               key={index}
-              onClick={() => handleDateClick(day)}
+              onClick={() => handleDateClick(day, hasBookings)}
               className={cn(
                 "min-h-[100px] md:min-h-[120px] p-1 border-b border-r border-border transition-colors",
                 !isCurrentMonth && "bg-muted/30 text-muted-foreground",
                 isCurrentMonth && "bg-card",
-                hasBookings && "cursor-pointer hover:bg-muted/20",
+                isClickable && "cursor-pointer hover:bg-muted/20",
                 index % 7 === 0 && "border-l"
               )}
             >
@@ -357,6 +375,18 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
               </p>
             )}
           </div>
+          
+          {/* Book this date button for users */}
+          {!isAdmin && selectedDate && !isBefore(startOfDay(selectedDate), startOfDay(new Date())) && (
+            <Button 
+              variant="accent" 
+              className="w-full mt-4"
+              onClick={handleBookFromDialog}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Book This Date
+            </Button>
+          )}
         </DialogContent>
       </Dialog>
     </div>
