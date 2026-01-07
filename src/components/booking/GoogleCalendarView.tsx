@@ -24,6 +24,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
 import { useAuth } from '@/context/AuthContext';
 import { formatTime12Hour, formatTimeRange12Hour } from '@/lib/timeUtils';
+import { isHoliday, isSunday, getHolidayName } from '@/lib/indianHolidays';
 
 interface GoogleCalendarViewProps {
   bookings: Booking[];
@@ -193,10 +194,13 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
 
       {/* Weekday Headers */}
       <div className="grid grid-cols-7 border-b border-border">
-        {WEEKDAYS.map((day) => (
+        {WEEKDAYS.map((day, idx) => (
           <div
             key={day}
-            className="p-2 text-center text-sm font-medium text-muted-foreground bg-muted/20"
+            className={cn(
+              "p-2 text-center text-sm font-medium bg-muted/20",
+              idx === 0 ? "text-destructive" : "text-muted-foreground"
+            )}
           >
             {day}
           </div>
@@ -230,16 +234,27 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
             >
               {/* Date Number */}
               <div className="flex justify-end mb-1">
-                <span
-                  className={cn(
-                    "text-sm w-7 h-7 flex items-center justify-center rounded-full",
-                    isToday && "bg-primary text-primary-foreground font-semibold",
-                    !isToday && !isCurrentMonth && "text-muted-foreground",
-                    !isToday && isCurrentMonth && "text-foreground"
-                  )}
-                >
-                  {format(day, 'd')}
-                </span>
+                {(() => {
+                  const holiday = isHoliday(day);
+                  const sunday = isSunday(day);
+                  const holidayName = getHolidayName(day);
+                  const isHolidayDate = holiday || sunday;
+                  
+                  return (
+                    <span
+                      className={cn(
+                        "text-sm w-7 h-7 flex items-center justify-center rounded-full",
+                        isToday && "bg-primary text-primary-foreground font-semibold",
+                        !isToday && !isCurrentMonth && "text-muted-foreground",
+                        !isToday && isCurrentMonth && !isHolidayDate && "text-foreground",
+                        !isToday && isCurrentMonth && isHolidayDate && "text-destructive font-semibold"
+                      )}
+                      title={holidayName || (sunday ? 'Sunday' : undefined)}
+                    >
+                      {format(day, 'd')}
+                    </span>
+                  );
+                })()}
               </div>
 
               {/* Event Bars */}
