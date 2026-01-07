@@ -44,9 +44,9 @@ export function Header() {
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden sm:flex">
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5">
               <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline ml-2">Logout</span>
+              <span className="hidden sm:inline">Logout</span>
             </Button>
           </div>
         )}
