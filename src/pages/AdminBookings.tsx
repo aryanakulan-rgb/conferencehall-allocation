@@ -30,6 +30,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
 import { Search, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { AdminTopBar } from '@/components/navigation/AdminTopBar';
+import { formatTimeRange12Hour } from '@/lib/timeUtils';
 
 export default function AdminBookings() {
   const { user } = useAuth();
@@ -128,7 +129,7 @@ export default function AdminBookings() {
                 <TableCell>
                   <div className="text-sm">
                     <p>{format(new Date(booking.date), 'MMM d, yyyy')}</p>
-                    <p className="text-muted-foreground">{booking.start_time} - {booking.end_time}</p>
+                    <p className="text-muted-foreground">{formatTimeRange12Hour(booking.start_time, booking.end_time)}</p>
                   </div>
                 </TableCell>
                 <TableCell>

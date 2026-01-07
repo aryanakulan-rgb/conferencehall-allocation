@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { formatTimeRange12Hour } from "@/lib/timeUtils";
 
 const AdminCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -245,7 +246,7 @@ const AdminCalendar = () => {
                         <div className="text-sm text-muted-foreground">
                           <span>{getHallName(booking.hall_id)}</span>
                           <span className="mx-2">•</span>
-                          <span>{booking.start_time} - {booking.end_time}</span>
+                          <span>{formatTimeRange12Hour(booking.start_time, booking.end_time)}</span>
                         </div>
                       </div>
                     );
@@ -293,7 +294,7 @@ const AdminCalendar = () => {
                           )}
                         >
                           <TableCell>{format(new Date(booking.date), "MMM d, yyyy")}</TableCell>
-                          <TableCell>{booking.start_time} - {booking.end_time}</TableCell>
+                          <TableCell>{formatTimeRange12Hour(booking.start_time, booking.end_time)}</TableCell>
                           <TableCell>{getHallName(booking.hall_id)}</TableCell>
                           <TableCell className="max-w-[200px] truncate">{booking.purpose}</TableCell>
                           <TableCell>{getUserName(booking.user_id)}</TableCell>

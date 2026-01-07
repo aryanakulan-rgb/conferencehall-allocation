@@ -23,6 +23,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
 import { useAuth } from '@/context/AuthContext';
+import { formatTime12Hour, formatTimeRange12Hour } from '@/lib/timeUtils';
 
 interface GoogleCalendarViewProps {
   bookings: Booking[];
@@ -257,9 +258,9 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                         "text-xs px-1.5 py-0.5 rounded truncate font-medium",
                         getStatusColor(booking.status)
                       )}
-                      title={`${booking.purpose} - ${bookerInfo}${sectionName ? ` (${sectionName})` : ''} | ${booking.start_time} - ${booking.end_time}`}
+                      title={`${booking.purpose} - ${bookerInfo}${sectionName ? ` (${sectionName})` : ''} | ${formatTimeRange12Hour(booking.start_time, booking.end_time)}`}
                     >
-                      <span className="hidden sm:inline">{booking.start_time} </span>
+                      <span className="hidden sm:inline">{formatTime12Hour(booking.start_time)} </span>
                       <span className="truncate">{bookerInfo}</span>
                     </div>
                   );
@@ -361,7 +362,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Clock className="h-3 w-3" />
-                      {booking.start_time} - {booking.end_time}
+                      {formatTimeRange12Hour(booking.start_time, booking.end_time)}
                     </div>
                     {profile && (
                       <div className="flex items-center gap-1.5">

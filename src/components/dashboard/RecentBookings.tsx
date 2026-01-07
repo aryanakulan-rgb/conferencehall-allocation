@@ -2,6 +2,7 @@ import { Booking, Hall } from '@/types';
 import { BookingStatusBadge } from './BookingStatusBadge';
 import { format } from 'date-fns';
 import { Calendar, Clock, MapPin } from 'lucide-react';
+import { formatTimeRange12Hour } from '@/lib/timeUtils';
 
 interface RecentBookingsProps {
   bookings: Booking[];
@@ -52,7 +53,7 @@ export function RecentBookings({ bookings, halls }: RecentBookingsProps) {
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    {booking.start_time} - {booking.end_time}
+                    {formatTimeRange12Hour(booking.start_time, booking.end_time)}
                   </span>
                 </div>
               </div>

@@ -22,6 +22,7 @@ import {
 import { format } from 'date-fns';
 import { Calendar, Clock, Plus, AlertCircle, X, Pencil } from 'lucide-react';
 import { BackButton } from '@/components/navigation/BackButton';
+import { formatTimeRange12Hour } from '@/lib/timeUtils';
 
 export default function MyBookings() {
   const { user } = useAuth();
@@ -98,7 +99,7 @@ export default function MyBookings() {
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
           <Clock className="h-4 w-4" />
-          {booking.start_time} - {booking.end_time}
+          {formatTimeRange12Hour(booking.start_time, booking.end_time)}
         </div>
       </div>
 
