@@ -126,7 +126,12 @@ export default function BookRoom() {
                 </Card>
               ) : (
                 <div className="grid md:grid-cols-2 gap-6">
-                  {halls.map((hall) => (
+                  {[...halls].sort((a, b) => {
+                    // Sort mini halls first, then conference halls
+                    if (a.type === 'mini' && b.type !== 'mini') return -1;
+                    if (a.type !== 'mini' && b.type === 'mini') return 1;
+                    return 0;
+                  }).map((hall) => (
                     <HallSelectionCard
                       key={hall.id}
                       hall={hall}
