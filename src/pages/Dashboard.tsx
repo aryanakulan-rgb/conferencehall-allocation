@@ -185,13 +185,20 @@ export default function Dashboard() {
         ) : (
           <>
             {/* Stats Grid for Users */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
                 title="My Bookings"
                 value={userBookingsForStats.length}
                 subtitle="Total requests"
                 icon={Calendar}
                 variant="primary"
+              />
+              <StatCard
+                title="Approved"
+                value={approvedCount}
+                subtitle="Confirmed bookings"
+                icon={CheckCircle}
+                variant="success"
               />
               <StatCard
                 title="Pending"
