@@ -24,7 +24,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
 import { useAuth } from '@/context/AuthContext';
 import { formatTime12Hour, formatTimeRange12Hour } from '@/lib/timeUtils';
-import { isHoliday, isSunday, getHolidayName } from '@/lib/indianHolidays';
+import { isHoliday, isSunday, isSecondSaturday, getHolidayName } from '@/lib/indianHolidays';
 
 interface GoogleCalendarViewProps {
   bookings: Booking[];
@@ -237,8 +237,11 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                 {(() => {
                   const holiday = isHoliday(day);
                   const sunday = isSunday(day);
+                  const secondSat = isSecondSaturday(day);
                   const holidayName = getHolidayName(day);
-                  const isHolidayDate = holiday || sunday;
+                  const isHolidayDate = holiday || sunday || secondSat;
+                  
+                  const tooltipText = holidayName || (sunday ? 'Sunday' : secondSat ? '2nd Saturday' : undefined);
                   
                   return (
                     <span
@@ -249,7 +252,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                         !isToday && isCurrentMonth && !isHolidayDate && "text-foreground",
                         !isToday && isCurrentMonth && isHolidayDate && "text-destructive font-semibold"
                       )}
-                      title={holidayName || (sunday ? 'Sunday' : undefined)}
+                      title={tooltipText}
                     >
                       {format(day, 'd')}
                     </span>
