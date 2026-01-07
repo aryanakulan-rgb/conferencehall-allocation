@@ -3,6 +3,8 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { GoogleCalendarView } from '@/components/booking/GoogleCalendarView';
 import { useBookings } from '@/hooks/useBookings';
 import { useHalls } from '@/hooks/useHalls';
+import { useProfiles } from '@/hooks/useProfiles';
+import { useSections } from '@/hooks/useSections';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BackButton } from '@/components/navigation/BackButton';
 
@@ -11,8 +13,10 @@ export default function CalendarPage() {
   
   const { data: bookings = [], isLoading: bookingsLoading } = useBookings();
   const { data: halls = [], isLoading: hallsLoading } = useHalls();
+  const { data: profiles = [], isLoading: profilesLoading } = useProfiles();
+  const { data: sections = [], isLoading: sectionsLoading } = useSections();
 
-  const isLoading = hallsLoading || bookingsLoading;
+  const isLoading = hallsLoading || bookingsLoading || profilesLoading || sectionsLoading;
 
   if (isLoading) {
     return (
@@ -39,7 +43,12 @@ export default function CalendarPage() {
           </p>
         </div>
 
-        <GoogleCalendarView bookings={bookings} halls={halls} />
+        <GoogleCalendarView 
+          bookings={bookings} 
+          halls={halls} 
+          profiles={profiles}
+          sections={sections}
+        />
       </div>
     </DashboardLayout>
   );
