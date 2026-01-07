@@ -124,22 +124,10 @@ export default function Dashboard() {
             </p>
           </div>
           {!isAdmin && (
-            <div className="flex items-center gap-2">
-              <Button variant="accent" onClick={() => navigate('/halls')}>
-                <Calendar className="mr-2 h-4 w-4" />
-                Book a Hall
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={async () => {
-                  await logout();
-                  navigate('/', { replace: true });
-                }}
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Logout
-              </Button>
-            </div>
+            <Button variant="accent" onClick={() => navigate('/halls')}>
+              <Calendar className="mr-2 h-4 w-4" />
+              Book a Hall
+            </Button>
           )}
         </div>
 
