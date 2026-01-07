@@ -1,56 +1,68 @@
-// Indian National and Major Holidays
-// This list includes major gazetted holidays that are observed across India
+// Kerala Government Holidays
+// Based on official Kerala Government notification for 2026
 
 export interface Holiday {
   date: string; // MM-DD format
   name: string;
 }
 
-// Returns holidays for a given year
-export function getIndianHolidays(year: number): Holiday[] {
+// Kerala Government holidays for 2026
+export function getKeralaHolidays(year: number): Holiday[] {
+  // Note: Some dates vary by year based on lunar calendar
+  // This list is based on Kerala Government notification for 2026
+  if (year === 2026) {
+    return [
+      { date: '01-02', name: 'Mannam Jayanti' },
+      { date: '01-26', name: 'Republic Day' },
+      { date: '02-15', name: 'Sivarathri' },
+      { date: '03-04', name: 'Holi' },
+      { date: '03-20', name: 'Eid ul-Fitr (Ramzan)' },
+      { date: '04-02', name: 'Maundy Thursday (Pesaha Vyazham)' },
+      { date: '04-03', name: 'Good Friday' },
+      { date: '04-05', name: 'Easter Sunday' },
+      { date: '04-14', name: 'Dr. B.R. Ambedkar Jayanti' },
+      { date: '04-15', name: 'Vishu' },
+      { date: '05-01', name: 'May Day' },
+      { date: '05-27', name: 'Bakrid (Eid ul-Adha)' },
+      { date: '06-25', name: 'Muharram' },
+      { date: '08-12', name: 'Karkidaka Vavu Bali' },
+      { date: '08-15', name: 'Independence Day' },
+      { date: '08-25', name: 'First Onam / Milad-i-Sherif' },
+      { date: '08-26', name: 'Thiruvonam' },
+      { date: '08-27', name: 'Third Onam' },
+      { date: '08-28', name: 'Fourth Onam / Ayyankali Jayanti / Sree Narayana Guru Jayanthi' },
+      { date: '09-04', name: 'Janmashtami' },
+      { date: '09-21', name: 'Sree Narayana Guru Samadhi Day' },
+      { date: '10-02', name: 'Gandhi Jayanti' },
+      { date: '10-20', name: 'Mahanavami' },
+      { date: '10-21', name: 'Vijayadashami (Dussehra)' },
+      { date: '11-08', name: 'Deepavali' },
+      { date: '12-25', name: 'Christmas' },
+    ];
+  }
+  
+  // Fallback for other years with common Kerala holidays
   return [
-    // Fixed Date Holidays
+    { date: '01-02', name: 'Mannam Jayanti' },
     { date: '01-26', name: 'Republic Day' },
+    { date: '04-14', name: 'Dr. B.R. Ambedkar Jayanti' },
+    { date: '04-15', name: 'Vishu' },
+    { date: '05-01', name: 'May Day' },
     { date: '08-15', name: 'Independence Day' },
     { date: '10-02', name: 'Gandhi Jayanti' },
-    { date: '01-01', name: "New Year's Day" },
-    { date: '05-01', name: 'May Day' },
     { date: '12-25', name: 'Christmas' },
-    
-    // Major Hindu Holidays (approximate dates - may vary by year)
-    { date: '01-14', name: 'Makar Sankranti' },
-    { date: '01-15', name: 'Pongal' },
-    { date: '03-08', name: 'Maha Shivaratri' },
-    { date: '03-25', name: 'Holi' },
-    { date: '04-06', name: 'Ugadi/Gudi Padwa' },
-    { date: '04-14', name: 'Ambedkar Jayanti' },
-    { date: '04-21', name: 'Ram Navami' },
-    { date: '08-26', name: 'Janmashtami' },
-    { date: '10-02', name: 'Dussehra' },
-    { date: '10-20', name: 'Dussehra (Vijayadashami)' },
-    { date: '11-01', name: 'Diwali' },
-    { date: '11-15', name: 'Guru Nanak Jayanti' },
-    
-    // Major Muslim Holidays (approximate - dates vary each year based on lunar calendar)
-    { date: '03-31', name: 'Eid ul-Fitr' },
-    { date: '06-07', name: 'Eid ul-Adha' },
-    { date: '07-17', name: 'Muharram' },
-    { date: '09-16', name: 'Milad un-Nabi' },
-    
-    // Christian Holidays
-    { date: '04-18', name: 'Good Friday' },
-    { date: '04-20', name: 'Easter' },
-    
-    // Other Important Days
-    { date: '10-31', name: 'Sardar Patel Jayanti' },
-    { date: '11-14', name: "Children's Day" },
   ];
+}
+
+// Alias for backward compatibility
+export function getIndianHolidays(year: number): Holiday[] {
+  return getKeralaHolidays(year);
 }
 
 // Check if a date is a holiday
 export function isHoliday(date: Date): boolean {
   const year = date.getFullYear();
-  const holidays = getIndianHolidays(year);
+  const holidays = getKeralaHolidays(year);
   const dateStr = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   return holidays.some(h => h.date === dateStr);
 }
@@ -58,7 +70,7 @@ export function isHoliday(date: Date): boolean {
 // Get holiday name for a date
 export function getHolidayName(date: Date): string | null {
   const year = date.getFullYear();
-  const holidays = getIndianHolidays(year);
+  const holidays = getKeralaHolidays(year);
   const dateStr = `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   const holiday = holidays.find(h => h.date === dateStr);
   return holiday ? holiday.name : null;
