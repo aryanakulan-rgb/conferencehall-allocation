@@ -36,8 +36,8 @@ export default function Dashboard() {
   const updateBooking = useUpdateBooking();
 
   const isAdmin = user?.role === 'admin';
-  const bookings = isAdmin ? allBookings : userBookings;
-  const isLoading = hallsLoading || (isAdmin ? allBookingsLoading : userBookingsLoading);
+  // Show all bookings in calendar for everyone, but user stats show only their own
+  const isLoading = hallsLoading || allBookingsLoading || userBookingsLoading;
 
   const filteredHalls = isAdmin 
     ? halls 
@@ -46,9 +46,11 @@ export default function Dashboard() {
         hall.name.toLowerCase().includes('main conference')
       );
 
-  const pendingCount = bookings.filter(b => b.status === 'pending').length;
-  const approvedCount = bookings.filter(b => b.status === 'approved').length;
-  const rejectedCount = bookings.filter(b => b.status === 'rejected').length;
+  // User stats use their own bookings
+  const userBookingsForStats = isAdmin ? allBookings : userBookings;
+  const pendingCount = userBookingsForStats.filter(b => b.status === 'pending').length;
+  const approvedCount = userBookingsForStats.filter(b => b.status === 'approved').length;
+  const rejectedCount = userBookingsForStats.filter(b => b.status === 'rejected').length;
 
   const handleApprove = (bookingId: string) => {
     updateStatus.mutate({ bookingId, status: 'approved' });
@@ -141,7 +143,7 @@ export default function Dashboard() {
               <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
                   <GoogleCalendarView 
-                    bookings={bookings} 
+                    bookings={allBookings} 
                     halls={filteredHalls} 
                     profiles={profiles}
                     sections={sections}
@@ -151,7 +153,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <PendingApprovals 
-                    bookings={bookings} 
+                    bookings={allBookings} 
                     halls={halls}
                     onApprove={handleApprove}
                     onReject={handleReject}
@@ -162,7 +164,7 @@ export default function Dashboard() {
             
             <TabsContent value="analytics">
               <AdminAnalytics 
-                bookings={bookings} 
+                bookings={allBookings} 
                 halls={halls} 
                 profilesCount={profiles.length}
               />
@@ -174,7 +176,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <StatCard
                 title="My Bookings"
-                value={bookings.length}
+                value={userBookingsForStats.length}
                 subtitle="Total requests"
                 icon={Calendar}
                 variant="primary"
@@ -196,7 +198,7 @@ export default function Dashboard() {
 
             {/* Calendar Full Width */}
             <GoogleCalendarView 
-              bookings={bookings} 
+              bookings={allBookings} 
               halls={filteredHalls} 
               profiles={profiles}
               sections={sections}
