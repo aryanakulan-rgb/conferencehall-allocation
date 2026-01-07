@@ -7,17 +7,13 @@ import { Clock, MapPin, Calendar as CalendarIcon } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { timeSlots, formatTime12Hour, formatTimeRange12Hour } from '@/lib/timeUtils';
 
 interface BookingCalendarProps {
   bookings: Booking[];
   halls: Hall[];
 }
 
-const timeSlots = [
-  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
-];
 
 export function BookingCalendar({ bookings, halls }: BookingCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -152,7 +148,7 @@ export function BookingCalendar({ bookings, halls }: BookingCalendarProps) {
                         )}
                         title={isBooked ? `${booking.purpose} (${booking.status})` : 'Available'}
                       >
-                        {time}
+                        {formatTime12Hour(time)}
                       </div>
                     );
                   })}
@@ -185,7 +181,7 @@ export function BookingCalendar({ bookings, halls }: BookingCalendarProps) {
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Clock className="h-3 w-3" />
-                        {booking.start_time} - {booking.end_time}
+                        {formatTimeRange12Hour(booking.start_time, booking.end_time)}
                       </div>
                     </div>
                   </div>

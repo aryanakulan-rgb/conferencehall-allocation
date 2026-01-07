@@ -12,6 +12,7 @@ import { CalendarIcon, Clock, Send, AlertTriangle, CheckCircle2 } from 'lucide-r
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { checkBookingConflict } from '@/hooks/useBookings';
+import { timeSlots, formatTime12Hour, formatTimeRange12Hour } from '@/lib/timeUtils';
 
 interface BookingFormProps {
   halls: Hall[];
@@ -30,11 +31,6 @@ export interface BookingFormData {
   purpose: string;
 }
 
-const timeSlots = [
-  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-  '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-  '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
-];
 
 export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, onCancel, isSubmitting: externalIsSubmitting }: BookingFormProps) {
   const [hallId, setHallId] = useState(selectedHall?.id || '');
@@ -76,7 +72,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
         if (hasConflict) {
           setConflictStatus('conflict');
           setConflictMessage(
-            `Conflicts with ${conflictingBooking?.status} booking (${conflictingBooking?.start_time} - ${conflictingBooking?.end_time})`
+            `Conflicts with ${conflictingBooking?.status} booking (${formatTimeRange12Hour(conflictingBooking?.start_time || '', conflictingBooking?.end_time || '')})`
           );
         } else {
           setConflictStatus('available');
@@ -171,7 +167,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
             <SelectContent>
               {timeSlots.map((time) => (
                 <SelectItem key={time} value={time}>
-                  {time}
+                  {formatTime12Hour(time)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -188,7 +184,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
             <SelectContent>
               {timeSlots.map((time) => (
                 <SelectItem key={time} value={time} disabled={startTime >= time}>
-                  {time}
+                  {formatTime12Hour(time)}
                 </SelectItem>
               ))}
             </SelectContent>
