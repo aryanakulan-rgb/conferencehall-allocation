@@ -201,22 +201,15 @@ export default function Dashboard() {
               />
             </div>
 
-            {/* Main Content Grid */}
-            <div className="grid lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <GoogleCalendarView 
-                  bookings={bookings} 
-                  halls={filteredHalls} 
-                  profiles={profiles}
-                  sections={sections}
-                  onDeleteBooking={handleDeleteBooking}
-                  onEditBooking={handleEditBooking}
-                />
-              </div>
-              <div>
-                <RecentBookings bookings={bookings} halls={halls} />
-              </div>
-            </div>
+            {/* Calendar Full Width */}
+            <GoogleCalendarView 
+              bookings={bookings} 
+              halls={filteredHalls} 
+              profiles={profiles}
+              sections={sections}
+              onDeleteBooking={handleDeleteBooking}
+              onEditBooking={handleEditBooking}
+            />
           </>
         )}
 
