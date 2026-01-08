@@ -5,6 +5,7 @@ import { HallCard } from '@/components/halls/HallCard';
 import { BookingForm } from '@/components/booking/BookingForm';
 import { useActiveHalls, Hall } from '@/hooks/useHalls';
 import { useCreateBooking } from '@/hooks/useBookings';
+import { formatDateLocal } from '@/lib/timeUtils';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -49,7 +50,7 @@ export default function Halls() {
   }) => {
     await createBooking.mutateAsync({
       hall_id: data.hallId,
-      date: data.date.toISOString().split('T')[0],
+      date: formatDateLocal(data.date),
       start_time: data.startTime,
       end_time: data.endTime,
       purpose: data.purpose,
