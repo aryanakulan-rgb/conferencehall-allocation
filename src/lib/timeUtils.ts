@@ -24,3 +24,11 @@ export function formatTime12Hour(time24: string): string {
 export function formatTimeRange12Hour(startTime: string, endTime: string): string {
   return `${formatTime12Hour(startTime)} - ${formatTime12Hour(endTime)}`;
 }
+
+// Format date to YYYY-MM-DD in local timezone (avoids UTC conversion issues)
+export function formatDateLocal(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}

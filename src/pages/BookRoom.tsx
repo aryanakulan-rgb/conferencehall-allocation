@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { BackButton } from '@/components/navigation/BackButton';
 import { format, parseISO } from 'date-fns';
+import { formatDateLocal } from '@/lib/timeUtils';
 
 const facilityIcons: Record<string, React.ReactNode> = {
   'Projector': <Projector className="h-4 w-4" />,
@@ -53,7 +54,7 @@ export default function BookRoom() {
     try {
       await createBooking.mutateAsync({
         hall_id: data.hallId,
-        date: data.date.toISOString().split('T')[0],
+        date: formatDateLocal(data.date),
         start_time: data.startTime,
         end_time: data.endTime,
         purpose: data.purpose,

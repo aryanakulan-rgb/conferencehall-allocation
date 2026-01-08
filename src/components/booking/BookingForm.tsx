@@ -12,7 +12,7 @@ import { CalendarIcon, Clock, Send, AlertTriangle, CheckCircle2 } from 'lucide-r
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { checkBookingConflict } from '@/hooks/useBookings';
-import { timeSlots, formatTime12Hour, formatTimeRange12Hour } from '@/lib/timeUtils';
+import { timeSlots, formatTime12Hour, formatTimeRange12Hour, formatDateLocal } from '@/lib/timeUtils';
 
 interface BookingFormProps {
   halls: Hall[];
@@ -61,7 +61,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
       setConflictStatus('checking');
       
       try {
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = formatDateLocal(date);
         const { hasConflict, conflictingBooking } = await checkBookingConflict(
           hallId,
           dateStr,
