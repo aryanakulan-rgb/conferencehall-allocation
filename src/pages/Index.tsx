@@ -113,7 +113,7 @@ const Index = () => {
       <footer className="border-t border-border bg-card">
         <div className="container py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>© 2026 Directorate of Industries & Commerce. All rights reserved.</p>
-          <p>Developed with ♥ for Government of India</p>
+          <p>Developed for Government of Kerala</p>
         </div>
       </footer>
     </div>
