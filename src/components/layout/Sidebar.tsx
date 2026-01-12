@@ -26,10 +26,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'user'] },
+  { title: 'Booking Calendar', href: '/admin-calendar', icon: Calendar, roles: ['admin'] },
   { title: 'Book Room', href: '/book-room', icon: CalendarPlus, roles: ['user'] },
   { title: 'My Bookings', href: '/my-bookings', icon: ClipboardList, roles: ['user'] },
   { title: 'All Bookings', href: '/bookings', icon: ClipboardList, roles: ['admin'] },
-  { title: 'Booking Calendar', href: '/admin-calendar', icon: Calendar, roles: ['admin'] },
   { title: 'Hall Management', href: '/hall-management', icon: Settings, roles: ['admin'] },
 ];
 
