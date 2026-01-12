@@ -42,7 +42,7 @@ const Index = () => {
                   <Building2 className="h-7 w-7 text-accent-foreground" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold">DIC Hall Booking</h2>
+                  <h2 className="text-lg font-semibold">DI&C Conference Hall Booking</h2>
                   <p className="text-sm text-primary-foreground/70">Directorate of Industries & Commerce</p>
                 </div>
               </div>
