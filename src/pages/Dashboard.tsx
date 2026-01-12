@@ -107,9 +107,22 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 animate-fade-in">
+      <div className="space-y-6 animate-fade-in">
         {isAdmin ? (
-          <AdminTopBar />
+          <>
+            <AdminTopBar />
+            {/* Pending Approvals - Right below header */}
+            <div className="flex justify-end -mt-2">
+              <div className="w-full lg:w-[320px]">
+                <PendingApprovals 
+                  bookings={allBookings} 
+                  halls={halls}
+                  onApprove={handleApprove}
+                  onReject={handleReject}
+                />
+              </div>
+            </div>
+          </>
         ) : (
           <BackButton className="mb-4" />
         )}
@@ -133,17 +146,6 @@ export default function Dashboard() {
 
         {isAdmin ? (
           <>
-            {/* Pending Approvals - Top */}
-            <div className="flex justify-end">
-              <div className="w-full lg:w-[320px]">
-                <PendingApprovals 
-                  bookings={allBookings} 
-                  halls={halls}
-                  onApprove={handleApprove}
-                  onReject={handleReject}
-                />
-              </div>
-            </div>
             
             <Tabs defaultValue="overview" className="space-y-6">
               <TabsList>
