@@ -139,19 +139,9 @@ export default function Dashboard() {
             </TabsList>
             
             <TabsContent value="overview" className="space-y-6">
-              {/* Main Content Grid */}
-              <div className="grid lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2">
-                  <GoogleCalendarView 
-                    bookings={allBookings} 
-                    halls={filteredHalls} 
-                    profiles={profiles}
-                    sections={sections}
-                    onDeleteBooking={handleDeleteBooking}
-                    onEditBooking={handleEditBooking}
-                  />
-                </div>
-                <div>
+              {/* Pending Approvals - Top Right */}
+              <div className="flex justify-end">
+                <div className="w-full lg:w-[400px]">
                   <PendingApprovals 
                     bookings={allBookings} 
                     halls={halls}
@@ -160,6 +150,16 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
+              
+              {/* Calendar Full Width */}
+              <GoogleCalendarView 
+                bookings={allBookings} 
+                halls={filteredHalls} 
+                profiles={profiles}
+                sections={sections}
+                onDeleteBooking={handleDeleteBooking}
+                onEditBooking={handleEditBooking}
+              />
             </TabsContent>
             
             <TabsContent value="analytics">
