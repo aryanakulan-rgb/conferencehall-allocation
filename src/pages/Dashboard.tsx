@@ -132,44 +132,46 @@ export default function Dashboard() {
         </div>
 
         {isAdmin ? (
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="overview" className="space-y-6">
-              {/* Pending Approvals - Top Right */}
-              <div className="flex justify-end">
-                <div className="w-full lg:w-[400px]">
-                  <PendingApprovals 
-                    bookings={allBookings} 
-                    halls={halls}
-                    onApprove={handleApprove}
-                    onReject={handleReject}
-                  />
-                </div>
+          <>
+            {/* Pending Approvals - Top */}
+            <div className="flex justify-end">
+              <div className="w-full lg:w-[320px]">
+                <PendingApprovals 
+                  bookings={allBookings} 
+                  halls={halls}
+                  onApprove={handleApprove}
+                  onReject={handleReject}
+                />
               </div>
-              
-              {/* Calendar Full Width */}
-              <GoogleCalendarView 
-                bookings={allBookings} 
-                halls={filteredHalls} 
-                profiles={profiles}
-                sections={sections}
-                onDeleteBooking={handleDeleteBooking}
-                onEditBooking={handleEditBooking}
-              />
-            </TabsContent>
+            </div>
             
-            <TabsContent value="analytics">
-              <AdminAnalytics 
-                bookings={allBookings} 
-                halls={halls} 
-                profilesCount={profiles.length}
-              />
-            </TabsContent>
-          </Tabs>
+            <Tabs defaultValue="overview" className="space-y-6">
+              <TabsList>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="overview" className="space-y-6">
+                {/* Calendar Full Width */}
+                <GoogleCalendarView 
+                  bookings={allBookings} 
+                  halls={filteredHalls} 
+                  profiles={profiles}
+                  sections={sections}
+                  onDeleteBooking={handleDeleteBooking}
+                  onEditBooking={handleEditBooking}
+                />
+              </TabsContent>
+              
+              <TabsContent value="analytics">
+                <AdminAnalytics 
+                  bookings={allBookings} 
+                  halls={halls} 
+                  profilesCount={profiles.length}
+                />
+              </TabsContent>
+            </Tabs>
+          </>
         ) : (
           <>
             {/* Stats Grid for Users */}
