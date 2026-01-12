@@ -27,7 +27,6 @@ interface NavItem {
 const navItems: NavItem[] = [
   { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'user'] },
   { title: 'Book Room', href: '/book-room', icon: CalendarPlus, roles: ['user'] },
-  { title: 'Calendar', href: '/calendar', icon: Calendar, roles: ['admin', 'user'] },
   { title: 'My Bookings', href: '/my-bookings', icon: ClipboardList, roles: ['user'] },
   { title: 'All Bookings', href: '/bookings', icon: ClipboardList, roles: ['admin'] },
   { title: 'Booking Calendar', href: '/admin-calendar', icon: Calendar, roles: ['admin'] },
