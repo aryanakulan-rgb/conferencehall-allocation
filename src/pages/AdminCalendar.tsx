@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isWithinInterval, subDays } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Link } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { AdminTopBar } from "@/components/navigation/AdminTopBar";
 import { useBookings } from "@/hooks/useBookings";
@@ -248,6 +248,12 @@ const AdminCalendar = () => {
                           <span className="mx-2">•</span>
                           <span>{formatTimeRange12Hour(booking.start_time, booking.end_time)}</span>
                         </div>
+                        {booking.meeting_link && (
+                          <a href={booking.meeting_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1 text-xs mt-1">
+                            <Link className="h-3 w-3" />
+                            Meeting Link
+                          </a>
+                        )}
                       </div>
                     );
                   })}
@@ -271,6 +277,7 @@ const AdminCalendar = () => {
                     <TableHead>Time</TableHead>
                     <TableHead>Hall</TableHead>
                     <TableHead>Purpose</TableHead>
+                    <TableHead>Meeting Link</TableHead>
                     <TableHead>Requested By</TableHead>
                     <TableHead>Section</TableHead>
                     <TableHead>Status</TableHead>
@@ -279,9 +286,9 @@ const AdminCalendar = () => {
                 <TableBody>
                   {filteredBookings.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                       <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                         No bookings found
-                      </TableCell>
+                       </TableCell>
                     </TableRow>
                   ) : (
                     filteredBookings
@@ -297,6 +304,16 @@ const AdminCalendar = () => {
                           <TableCell>{formatTimeRange12Hour(booking.start_time, booking.end_time)}</TableCell>
                           <TableCell>{getHallName(booking.hall_id)}</TableCell>
                           <TableCell className="max-w-[200px] truncate">{booking.purpose}</TableCell>
+                          <TableCell>
+                            {booking.meeting_link ? (
+                              <a href={booking.meeting_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1 text-sm">
+                                <Link className="h-3 w-3" />
+                                Join
+                              </a>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
                           <TableCell>{getUserName(booking.user_id)}</TableCell>
                           <TableCell>{getUserSection(booking.user_id) || "-"}</TableCell>
                           <TableCell>

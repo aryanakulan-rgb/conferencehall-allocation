@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Hall } from '@/types';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -8,7 +9,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { format } from 'date-fns';
-import { CalendarIcon, Clock, Send, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { CalendarIcon, Clock, Send, AlertTriangle, CheckCircle2, Link } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { checkBookingConflict } from '@/hooks/useBookings';
@@ -29,6 +30,7 @@ export interface BookingFormData {
   startTime: string;
   endTime: string;
   purpose: string;
+  meetingLink?: string;
 }
 
 
@@ -38,6 +40,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [purpose, setPurpose] = useState('');
+  const [meetingLink, setMeetingLink] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [conflictStatus, setConflictStatus] = useState<'idle' | 'checking' | 'conflict' | 'available'>('idle');
   const [conflictMessage, setConflictMessage] = useState('');
@@ -107,7 +110,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
     }
 
     setIsSubmitting(true);
-    onSubmit({ hallId, date, startTime, endTime, purpose: purpose.trim() });
+    onSubmit({ hallId, date, startTime, endTime, purpose: purpose.trim(), meetingLink: meetingLink.trim() || undefined });
     setIsSubmitting(false);
   };
 
@@ -154,6 +157,21 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
             />
           </PopoverContent>
         </Popover>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="meetingLink">Meeting Link (Optional)</Label>
+        <div className="relative">
+          <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="meetingLink"
+            value={meetingLink}
+            onChange={(e) => setMeetingLink(e.target.value)}
+            placeholder="https://meet.google.com/..."
+            className="pl-10"
+            maxLength={500}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">

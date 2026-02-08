@@ -45,6 +45,7 @@ export type Database = {
           end_time: string
           hall_id: string
           id: string
+          meeting_link: string | null
           purpose: string
           remarks: string | null
           start_time: string
@@ -58,6 +59,7 @@ export type Database = {
           end_time: string
           hall_id: string
           id?: string
+          meeting_link?: string | null
           purpose: string
           remarks?: string | null
           start_time: string
@@ -71,6 +73,7 @@ export type Database = {
           end_time?: string
           hall_id?: string
           id?: string
+          meeting_link?: string | null
           purpose?: string
           remarks?: string | null
           start_time?: string
