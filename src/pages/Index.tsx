@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Building2, Calendar, CheckCircle, Clock, FileText, ArrowRight } from 'lucide-react';
+import { Building2, Calendar, CheckCircle, Clock, FileText, ArrowRight, Landmark } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -37,13 +37,15 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="text-primary-foreground space-y-6 animate-fade-in">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent">
-                  <Building2 className="h-7 w-7 text-accent-foreground" />
+              <div className="flex items-center gap-4">
+                {/* Kerala Government Emblem */}
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/20 border-2 border-accent/40">
+                  <Landmark className="h-9 w-9 text-accent" />
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">DI&C Conference Hall Booking</h2>
                   <p className="text-sm text-primary-foreground/70">Directorate of Industries & Commerce</p>
+                  <p className="text-xs text-accent font-medium">Government of Kerala</p>
                 </div>
               </div>
 
