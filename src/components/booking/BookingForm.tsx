@@ -159,20 +159,6 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
         </Popover>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="meetingLink">Meeting Link (Optional)</Label>
-        <div className="relative">
-          <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            id="meetingLink"
-            value={meetingLink}
-            onChange={(e) => setMeetingLink(e.target.value)}
-            placeholder="https://meet.google.com/..."
-            className="pl-10"
-            maxLength={500}
-          />
-        </div>
-      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -207,6 +193,21 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
               ))}
             </SelectContent>
           </Select>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="meetingLink">Meeting Link (Optional)</Label>
+        <div className="relative">
+          <Link className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="meetingLink"
+            value={meetingLink}
+            onChange={(e) => setMeetingLink(e.target.value)}
+            placeholder="https://meet.google.com/..."
+            className="pl-10"
+            maxLength={500}
+          />
         </div>
       </div>
 
