@@ -131,6 +131,7 @@ export function useCreateBooking() {
         .insert({
           ...booking,
           user_id: user.id,
+          meeting_link: booking.meeting_link || null,
         })
         .select()
         .single();

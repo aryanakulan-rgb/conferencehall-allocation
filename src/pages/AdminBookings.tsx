@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { format } from 'date-fns';
-import { Search, CheckCircle, XCircle, Eye } from 'lucide-react';
+import { Search, CheckCircle, XCircle, Eye, Link } from 'lucide-react';
 import { AdminTopBar } from '@/components/navigation/AdminTopBar';
 import { formatTimeRange12Hour } from '@/lib/timeUtils';
 
@@ -105,6 +105,7 @@ export default function AdminBookings() {
             <TableHead>Requested By</TableHead>
             <TableHead>Hall</TableHead>
             <TableHead>Date & Time</TableHead>
+            <TableHead>Meeting Link</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -112,7 +113,7 @@ export default function AdminBookings() {
         <TableBody>
           {bookings.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+              <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                 No bookings found
               </TableCell>
             </TableRow>
@@ -131,6 +132,16 @@ export default function AdminBookings() {
                     <p>{format(new Date(booking.date), 'MMM d, yyyy')}</p>
                     <p className="text-muted-foreground">{formatTimeRange12Hour(booking.start_time, booking.end_time)}</p>
                   </div>
+                </TableCell>
+                <TableCell>
+                  {booking.meeting_link ? (
+                    <a href={booking.meeting_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1 text-sm">
+                      <Link className="h-3 w-3" />
+                      Join
+                    </a>
+                  ) : (
+                    <span className="text-muted-foreground text-sm">—</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <BookingStatusBadge status={booking.status} size="sm" />

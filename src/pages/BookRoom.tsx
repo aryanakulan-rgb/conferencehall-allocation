@@ -58,6 +58,7 @@ export default function BookRoom() {
         start_time: data.startTime,
         end_time: data.endTime,
         purpose: data.purpose,
+        meeting_link: data.meetingLink || null,
       });
       toast.success('Booking request submitted successfully!');
       setShowForm(false);
