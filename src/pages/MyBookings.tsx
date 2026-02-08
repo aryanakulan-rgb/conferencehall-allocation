@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { format } from 'date-fns';
-import { Calendar, Clock, Plus, AlertCircle, X, Pencil } from 'lucide-react';
+import { Calendar, Clock, Plus, AlertCircle, X, Pencil, Link } from 'lucide-react';
 import { BackButton } from '@/components/navigation/BackButton';
 import { formatTimeRange12Hour } from '@/lib/timeUtils';
 
@@ -101,7 +101,16 @@ export default function MyBookings() {
           <Clock className="h-4 w-4" />
           {formatTimeRange12Hour(booking.start_time, booking.end_time)}
         </div>
-      </div>
+        </div>
+
+        {booking.meeting_link && (
+          <div className="flex items-center gap-2 text-sm">
+            <Link className="h-4 w-4 text-primary" />
+            <a href={booking.meeting_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate">
+              {booking.meeting_link}
+            </a>
+          </div>
+        )}
 
       {booking.remarks && (
         <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/5 border border-destructive/20">
