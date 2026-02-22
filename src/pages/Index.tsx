@@ -51,7 +51,7 @@ const Index = () => {
 
               <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
                 Conference Hall
-                <span className="block text-accent">Allocation System</span>
+                <span className="block text-accent">Booking System</span>
               </h1>
 
               <p className="text-lg text-primary-foreground/80 max-w-md">

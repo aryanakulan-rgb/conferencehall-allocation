@@ -163,7 +163,7 @@ export default function Auth() {
           </div>
           <div className="text-left">
             <h2 className="text-lg font-semibold text-foreground">DIC Hall Booking</h2>
-            <p className="text-sm text-muted-foreground">Conference Hall Allocation System</p>
+            <p className="text-sm text-muted-foreground">Conference Hall Booking System</p>
           </div>
         </div>
 
