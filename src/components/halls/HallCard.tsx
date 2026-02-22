@@ -40,7 +40,7 @@ export function HallCard({ hall, onBook, showBookButton = true }: HallCardProps)
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+      <p className="text-sm text-muted-foreground mb-4 whitespace-nowrap overflow-hidden text-ellipsis">
         {hall.description}
       </p>
 
