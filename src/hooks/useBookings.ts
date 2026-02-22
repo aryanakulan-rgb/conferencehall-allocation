@@ -70,14 +70,18 @@ export async function checkBookingConflict(
 
   if (error) throw error;
 
+  // Normalize time to HH:MM for consistent comparison
+  const normalizeTime = (t: string) => t.substring(0, 5);
+
   // Check for time overlap
   const conflictingBooking = existingBookings?.find((booking) => {
-    const existingStart = booking.start_time;
-    const existingEnd = booking.end_time;
+    const existingStart = normalizeTime(booking.start_time);
+    const existingEnd = normalizeTime(booking.end_time);
+    const newStart = normalizeTime(startTime);
+    const newEnd = normalizeTime(endTime);
     
-    // Check if times overlap
     // Overlap occurs when: newStart < existingEnd AND newEnd > existingStart
-    return startTime < existingEnd && endTime > existingStart;
+    return newStart < existingEnd && newEnd > existingStart;
   });
 
   return {
