@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Building2, Calendar, CheckCircle, Clock, FileText, ArrowRight, Landmark } from 'lucide-react';
+import { Building2, Calendar, CheckCircle, Clock, FileText, ArrowRight } from 'lucide-react';
+import dicLogo from '@/assets/dic-logo.png';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -39,9 +40,7 @@ const Index = () => {
             <div className="text-primary-foreground space-y-6 animate-fade-in">
               <div className="flex items-center gap-4">
                 {/* Kerala Government Emblem */}
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/20 border-2 border-accent/40">
-                  <Landmark className="h-9 w-9 text-accent" />
-                </div>
+                <img src={dicLogo} alt="DI&C Kerala Logo" className="h-16 w-16 rounded-full object-contain" />
                 <div>
                   <h2 className="text-lg font-semibold">DI&C Conference Hall Booking</h2>
                   <p className="text-sm text-primary-foreground/70">Directorate of Industries & Commerce</p>
