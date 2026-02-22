@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { useBookings, useUserBookings } from '@/hooks/useBookings';
+import { useBookings } from '@/hooks/useBookings';
 import { useHalls } from '@/hooks/useHalls';
 import { useProfiles } from '@/hooks/useProfiles';
 import { useSections } from '@/hooks/useSections';
@@ -16,14 +16,12 @@ export default function TodaysBookings() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
 
-  const { data: allBookings = [], isLoading: allLoading } = useBookings();
-  const { data: userBookings = [], isLoading: userLoading } = useUserBookings();
+  const { data: allBookings = [], isLoading } = useBookings();
   const { data: halls = [] } = useHalls();
   const { data: profiles = [] } = useProfiles();
   const { data: sections = [] } = useSections();
 
-  const isLoading = isAdmin ? allLoading : userLoading;
-  const bookings = isAdmin ? allBookings : userBookings;
+  const bookings = allBookings;
 
   const today = formatDateLocal(new Date());
   const todaysBookings = bookings
