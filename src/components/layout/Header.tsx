@@ -1,6 +1,7 @@
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Building2, LogOut, User } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
+import dicLogo from '@/assets/dic-logo.png';
 import { useNavigate } from 'react-router-dom';
 import { MobileSidebar } from './Sidebar';
 import { useSections } from '@/hooks/useSections';
@@ -22,9 +23,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-3">
           {user && <MobileSidebar />}
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-            <Building2 className="h-6 w-6 text-primary-foreground" />
-          </div>
+          <img src={dicLogo} alt="DI&C Logo" className="h-10 w-10 rounded-lg object-contain" />
           <div>
             <h1 className="text-lg font-semibold text-foreground">DIC Hall Booking</h1>
             <p className="text-xs text-muted-foreground">Directorate of Industries & Commerce</p>
