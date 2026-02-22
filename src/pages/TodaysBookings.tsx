@@ -92,7 +92,7 @@ export default function TodaysBookings() {
                       <TableHead className="whitespace-nowrap">Section</TableHead>
                       <TableHead className="whitespace-nowrap">Time</TableHead>
                       <TableHead className="whitespace-nowrap">Meeting Description</TableHead>
-                      <TableHead className="whitespace-nowrap">Meeting Link</TableHead>
+                      
                       <TableHead className="whitespace-nowrap">Status</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -107,20 +107,6 @@ export default function TodaysBookings() {
                           {formatTime12Hour(booking.start_time)} - {formatTime12Hour(booking.end_time)}
                         </TableCell>
                         <TableCell>{booking.purpose}</TableCell>
-                        <TableCell>
-                          {booking.meeting_link ? (
-                            <a
-                              href={booking.meeting_link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline truncate max-w-[200px] inline-block"
-                            >
-                              {booking.meeting_link}
-                            </a>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
                         <TableCell>
                           <Badge className={statusColor(booking.status)} variant="outline">
                             {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
