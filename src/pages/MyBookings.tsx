@@ -119,13 +119,13 @@ export default function MyBookings() {
         </div>
       )}
 
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+      <div className="flex flex-col gap-2 mt-4 pt-3 border-t border-border">
         <span className="text-xs text-muted-foreground">
           Requested on {format(new Date(booking.created_at), 'MMM d, yyyy')}
         </span>
         
         {booking.status === 'pending' && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
             <Button
               variant="ghost"
               size="sm"
