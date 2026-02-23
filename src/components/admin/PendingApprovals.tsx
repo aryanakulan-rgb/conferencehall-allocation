@@ -78,11 +78,11 @@ export function PendingApprovals({ bookings, halls, onApprove, onReject }: Pendi
           </span>
         </div>
 
-        <div className="space-y-4">
+        <div className="flex flex-wrap gap-4">
           {pendingBookings.map((booking) => (
             <div
               key={booking.id}
-              className="p-4 rounded-lg border border-border bg-secondary/20"
+              className="p-4 rounded-lg border border-border bg-secondary/20 min-w-[280px] flex-1"
             >
               <div className="flex items-start justify-between mb-3">
                 <div>

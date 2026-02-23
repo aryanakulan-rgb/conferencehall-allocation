@@ -151,8 +151,8 @@ export default function Dashboard() {
                 />
                 
                 {/* Pending Approvals - Bottom Left */}
-                <div className="flex justify-start">
-                  <div className="w-full lg:w-[320px]">
+                <div>
+                  <div className="w-full">
                     <PendingApprovals 
                       bookings={allBookings} 
                       halls={halls}
