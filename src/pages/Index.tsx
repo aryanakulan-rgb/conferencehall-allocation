@@ -111,8 +111,8 @@ const Index = () => {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card">
-        <div className="container py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+      <footer className="hero-gradient border-t border-primary-foreground/10">
+        <div className="container py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-primary-foreground">
           <p>© 2026 Directorate of Industries & Commerce. All rights reserved.</p>
           <p>Developed for Government of Kerala</p>
         </div>
