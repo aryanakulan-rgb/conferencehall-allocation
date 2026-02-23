@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building2, ArrowRight, Mail, Lock } from 'lucide-react';
+import { ArrowRight, Mail, Lock } from 'lucide-react';
+import dicKeralaEmblem from '@/assets/dic-kerala-emblem.png';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useSections } from '@/hooks/useSections';
@@ -158,8 +159,8 @@ export default function Auth() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary">
-            <Building2 className="h-7 w-7 text-primary-foreground" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl overflow-hidden">
+            <img src={dicKeralaEmblem} alt="DI&C Kerala Emblem" className="h-12 w-12 object-contain" />
           </div>
           <div className="text-left">
             <h2 className="text-lg font-semibold text-foreground">DIC Hall Booking</h2>
