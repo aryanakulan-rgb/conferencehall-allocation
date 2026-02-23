@@ -105,7 +105,7 @@ export function Sidebar() {
   if (!user) return null;
 
   return (
-    <aside className="hidden lg:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
+    <aside className="hidden lg:flex w-64 flex-col bg-sidebar border-r border-sidebar-border min-h-screen sticky top-0">
       <SidebarContent />
     </aside>
   );
