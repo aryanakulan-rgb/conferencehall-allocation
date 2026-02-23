@@ -68,7 +68,11 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
       : 'bg-accent/80 text-accent-foreground';
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string, bookingDate?: string) => {
+    // Show past-date bookings in gray regardless of status
+    if (bookingDate && isBefore(startOfDay(new Date(bookingDate)), startOfDay(new Date()))) {
+      return 'bg-muted text-muted-foreground';
+    }
     switch (status) {
       case 'approved':
         return 'bg-success text-success-foreground';
@@ -274,7 +278,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                       key={booking.id}
                       className={cn(
                         "text-xs px-1.5 py-0.5 rounded truncate font-medium",
-                        getStatusColor(booking.status)
+                        getStatusColor(booking.status, booking.date)
                       )}
                       title={`${booking.purpose} - ${bookerInfo}${sectionName ? ` (${sectionName})` : ''} | ${formatTimeRange12Hour(booking.start_time, booking.end_time)}`}
                     >
@@ -307,6 +311,10 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
         <div className="flex items-center gap-1.5">
           <span className="h-3 w-3 rounded bg-destructive" />
           <span className="text-muted-foreground">Rejected</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="h-3 w-3 rounded bg-muted" />
+          <span className="text-muted-foreground">Elapsed</span>
         </div>
       </div>
 
