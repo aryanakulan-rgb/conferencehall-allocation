@@ -48,6 +48,17 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
   const activeHalls = halls.filter(h => h.is_active);
   const isPending = externalIsSubmitting ?? isSubmitting;
 
+  // Check if selected time is in the past (for today's date)
+  const isTimePast = (() => {
+    if (!date || !startTime) return false;
+    const now = new Date();
+    const today = formatDateLocal(now);
+    const selectedDate = formatDateLocal(date);
+    if (selectedDate !== today) return false;
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    return startTime <= currentTime;
+  })();
+
   // Check for conflicts when hall, date, or time changes
   useEffect(() => {
     const checkConflict = async () => {
@@ -56,7 +67,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
         return;
       }
 
-      if (startTime >= endTime) {
+      if (startTime >= endTime || isTimePast) {
         setConflictStatus('idle');
         return;
       }
@@ -101,6 +112,11 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
 
     if (startTime >= endTime) {
       toast.error('End time must be after start time');
+      return;
+    }
+
+    if (isTimePast) {
+      toast.error('Cannot book a time slot that has already passed');
       return;
     }
 
@@ -211,22 +227,30 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
         </div>
       </div>
 
+      {/* Past Time Alert */}
+      {isTimePast && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>Cannot book this time slot — the selected time has already passed.</AlertDescription>
+        </Alert>
+      )}
+
       {/* Conflict Status Alert */}
-      {conflictStatus === 'checking' && (
+      {!isTimePast && conflictStatus === 'checking' && (
         <Alert className="border-muted">
           <Clock className="h-4 w-4 animate-spin" />
           <AlertDescription>Checking availability...</AlertDescription>
         </Alert>
       )}
       
-      {conflictStatus === 'conflict' && (
+      {!isTimePast && conflictStatus === 'conflict' && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>{conflictMessage}</AlertDescription>
         </Alert>
       )}
       
-      {conflictStatus === 'available' && (
+      {!isTimePast && conflictStatus === 'available' && (
         <Alert className="border-success bg-success/10">
           <CheckCircle2 className="h-4 w-4 text-success" />
           <AlertDescription className="text-success">Time slot is available!</AlertDescription>
@@ -256,7 +280,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
           type="submit" 
           variant="accent" 
           className="flex-1" 
-          disabled={isPending || conflictStatus === 'conflict' || conflictStatus === 'checking'}
+          disabled={isPending || isTimePast || conflictStatus === 'conflict' || conflictStatus === 'checking'}
         >
           <Send className="mr-2 h-4 w-4" />
           {isPending ? 'Submitting...' : 'Submit Request'}
