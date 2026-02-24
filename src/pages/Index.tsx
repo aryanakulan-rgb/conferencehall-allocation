@@ -35,37 +35,37 @@ const Index = () => {
       {/* Hero Section */}
       <div className="hero-gradient flex-1">
         <div className="container py-12 lg:py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
-            <div className="text-primary-foreground space-y-6 animate-fade-in">
+            <div className="text-primary-foreground space-y-7 animate-fade-in pl-4 lg:pl-10">
               <div className="flex items-center gap-4">
                 {/* Kerala Government Emblem */}
-                <img src={dicLogo} alt="DI&C Kerala Logo" className="h-16 w-16 rounded-full object-contain" />
+                <img src={dicLogo} alt="DI&C Kerala Logo" className="h-18 w-18 rounded-full object-contain" />
                 <div>
-                  <h2 className="text-lg font-semibold">DI&C Conference Hall Booking</h2>
-                  <p className="text-sm text-primary-foreground/70">Directorate of Industries & Commerce</p>
-                  <p className="text-xs text-accent font-medium">Government of Kerala</p>
+                  <h2 className="text-xl font-semibold">DI&C Conference Hall Booking</h2>
+                  <p className="text-base text-primary-foreground/70">Directorate of Industries & Commerce</p>
+                  <p className="text-sm text-accent font-medium">Government of Kerala</p>
                 </div>
               </div>
 
-              <h1 className="text-4xl lg:text-5xl font-bold leading-tight">
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
                 Conference Hall
                 <span className="block text-accent">Booking System</span>
               </h1>
 
-              <p className="text-lg text-primary-foreground/80 max-w-md">
+              <p className="text-xl text-primary-foreground/80 max-w-md">
                 A centralized platform for transparent, efficient, and auditable allocation of conference halls across all sections.
               </p>
 
-              <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="grid grid-cols-2 gap-5 pt-4">
                 {features.map((feature) => (
                   <div key={feature.title} className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary-foreground/10">
-                      <feature.icon className="h-4 w-4 text-accent" />
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-foreground/10">
+                      <feature.icon className="h-5 w-5 text-accent" />
                     </div>
                     <div>
-                      <p className="font-medium text-sm">{feature.title}</p>
-                      <p className="text-xs text-primary-foreground/60">{feature.description}</p>
+                      <p className="font-medium text-base">{feature.title}</p>
+                      <p className="text-sm text-primary-foreground/60">{feature.description}</p>
                     </div>
                   </div>
                 ))}
