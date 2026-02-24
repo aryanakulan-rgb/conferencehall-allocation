@@ -42,9 +42,8 @@ const Index = () => {
                 {/* Kerala Government Emblem */}
                 <img src={dicLogo} alt="DI&C Kerala Logo" className="h-18 w-18 rounded-full object-contain" />
                 <div>
-                  <h2 className="text-xl font-semibold">DI&C Conference Hall Booking</h2>
-                  <p className="text-base text-primary-foreground/70">Directorate of Industries & Commerce</p>
-                  <p className="text-sm text-accent font-medium">Government of Kerala</p>
+                  <p className="text-lg font-semibold text-primary-foreground">Directorate of Industries & Commerce</p>
+                  <p className="text-base text-accent font-medium">Government of Kerala</p>
                 </div>
               </div>
 
