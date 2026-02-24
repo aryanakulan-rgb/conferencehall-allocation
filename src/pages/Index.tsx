@@ -35,7 +35,7 @@ const Index = () => {
       {/* Hero Section */}
       <div className="hero-gradient flex-1">
         <div className="container py-12 lg:py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left Content */}
             <div className="text-primary-foreground space-y-7 animate-fade-in pl-4 lg:pl-10">
               <div className="flex items-center gap-4">
@@ -72,7 +72,7 @@ const Index = () => {
             </div>
 
             {/* Right Content - CTA Card */}
-            <div className="lg:pl-12 animate-slide-up">
+            <div className="lg:pl-12 lg:pt-24 animate-slide-up">
               <div className="bg-card rounded-2xl shadow-elevated p-8 max-w-md mx-auto">
                 <div className="text-center mb-8">
                   <h3 className="text-2xl font-semibold text-foreground">Get Started</h3>
