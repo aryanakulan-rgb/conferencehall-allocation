@@ -202,7 +202,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
           <div
             key={day}
             className={cn(
-              "p-2 text-center text-sm font-medium bg-muted/20",
+              "p-2 text-center text-base font-medium bg-muted/20",
               idx === 0 ? "text-destructive" : "text-muted-foreground"
             )}
           >
@@ -250,7 +250,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                   return (
                     <span
                       className={cn(
-                        "text-sm w-7 h-7 flex items-center justify-center rounded-full",
+                        "text-base font-medium w-8 h-8 flex items-center justify-center rounded-full",
                         isToday && "bg-primary text-primary-foreground font-semibold",
                         !isToday && !isCurrentMonth && "text-muted-foreground",
                         !isToday && isCurrentMonth && !isHolidayDate && "text-foreground",
@@ -277,7 +277,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                     <div
                       key={booking.id}
                       className={cn(
-                        "text-xs px-1.5 py-0.5 rounded truncate font-medium",
+                        "text-sm px-1.5 py-0.5 rounded truncate font-medium",
                         getStatusColor(booking.status, booking.date)
                       )}
                       title={`${booking.purpose} - ${bookerInfo}${sectionName ? ` (${sectionName})` : ''} | ${formatTimeRange12Hour(booking.start_time, booking.end_time)}`}
@@ -299,7 +299,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
       </div>
 
       {/* Legend */}
-      <div className="p-4 border-t border-border bg-muted/20 flex flex-wrap gap-4 text-xs">
+      <div className="p-4 border-t border-border bg-muted/20 flex flex-wrap gap-4 text-sm">
         <div className="flex items-center gap-1.5">
           <span className="h-3 w-3 rounded bg-success" />
           <span className="text-muted-foreground">Approved</span>
