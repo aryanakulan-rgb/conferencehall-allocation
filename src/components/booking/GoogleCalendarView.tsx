@@ -322,7 +322,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>
+          <DialogTitle className="text-lg">
               {selectedDate && format(selectedDate, 'EEEE, MMMM d, yyyy')}
             </DialogTitle>
           </DialogHeader>
@@ -337,7 +337,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                   className="p-3 rounded-lg bg-secondary/50 border border-border/50"
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <p className="font-medium text-foreground text-sm">
+                    <p className="font-medium text-foreground text-base">
                       {booking.purpose}
                     </p>
                     <div className="flex items-center gap-1">
@@ -381,23 +381,23 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                     </div>
                   </div>
                   
-                  <div className="space-y-1 text-xs text-muted-foreground">
+                  <div className="space-y-1.5 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3 w-3" />
+                      <MapPin className="h-3.5 w-3.5" />
                       {getHallName(booking.hall_id)}
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <Clock className="h-3 w-3" />
+                      <Clock className="h-3.5 w-3.5" />
                       {formatTimeRange12Hour(booking.start_time, booking.end_time)}
                     </div>
                     {profile && (
                       <div className="flex items-center gap-1.5">
-                        <User className="h-3 w-3" />
+                        <User className="h-3.5 w-3.5" />
                         {profile.name}
                       </div>
                     )}
                     <div className="flex items-center gap-1.5">
-                      <Building2 className="h-3 w-3" />
+                      <Building2 className="h-3.5 w-3.5" />
                       {sectionName}
                     </div>
                   </div>
