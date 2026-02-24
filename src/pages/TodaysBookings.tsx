@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '@/components/ui/table';
 import { formatTime12Hour, formatDateLocal } from '@/lib/timeUtils';
-import { CalendarCheck } from 'lucide-react';
+import { CalendarCheck, ExternalLink } from 'lucide-react';
 
 export default function TodaysBookings() {
   const { user } = useAuth();
@@ -92,7 +92,7 @@ export default function TodaysBookings() {
                       <TableHead className="whitespace-nowrap">Section</TableHead>
                       <TableHead className="whitespace-nowrap">Time</TableHead>
                       <TableHead className="whitespace-nowrap">Meeting Description</TableHead>
-                      
+                      {isAdmin && <TableHead className="whitespace-nowrap">Meeting Link</TableHead>}
                       <TableHead className="whitespace-nowrap">Status</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -107,6 +107,18 @@ export default function TodaysBookings() {
                           {formatTime12Hour(booking.start_time)} - {formatTime12Hour(booking.end_time)}
                         </TableCell>
                         <TableCell>{booking.purpose}</TableCell>
+                        {isAdmin && (
+                          <TableCell>
+                            {booking.meeting_link ? (
+                              <a href={booking.meeting_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline text-sm">
+                                <ExternalLink className="h-3.5 w-3.5" />
+                                Join
+                              </a>
+                            ) : (
+                              <span className="text-muted-foreground text-sm">-</span>
+                            )}
+                          </TableCell>
+                        )}
                         <TableCell>
                           <Badge className={statusColor(booking.status)} variant="outline">
                             {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
