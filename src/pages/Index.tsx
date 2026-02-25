@@ -40,7 +40,7 @@ const Index = () => {
             <div className="text-primary-foreground space-y-7 animate-fade-in pl-4 lg:pl-10">
               <div className="flex items-center gap-4">
                 {/* Kerala Government Emblem */}
-                <img src={dicLogo} alt="DI&C Kerala Logo" className="h-14 w-14 rounded-full object-contain" />
+                <img src={dicLogo} alt="DI&C Kerala Logo" className="h-16 w-16 rounded-full object-contain" />
                 <div>
                   <p className="text-2xl font-semibold text-primary-foreground whitespace-nowrap">Directorate of Industries & Commerce</p>
                   <p className="text-xl text-accent font-medium">Government of Kerala</p>
