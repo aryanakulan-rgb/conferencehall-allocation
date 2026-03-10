@@ -184,7 +184,7 @@ export default function Dashboard() {
                 icon={Calendar}
                 variant="primary"
                 active={activeFilter === 'all'}
-                onClick={() => setActiveFilter(activeFilter === 'all' ? null : 'all')}
+                onClick={() => navigate('/my-bookings')}
               />
               <StatCard
                 title="Approved"
