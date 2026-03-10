@@ -24,6 +24,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'approved' | 'pending' | 'rejected' | null>(null);
   
   const { data: halls = [], isLoading: hallsLoading } = useHalls();
   const { data: allBookings = [], isLoading: allBookingsLoading } = useBookings();
@@ -182,6 +183,8 @@ export default function Dashboard() {
                 subtitle="Total requests"
                 icon={Calendar}
                 variant="primary"
+                active={activeFilter === 'all'}
+                onClick={() => setActiveFilter(activeFilter === 'all' ? null : 'all')}
               />
               <StatCard
                 title="Approved"
@@ -189,6 +192,8 @@ export default function Dashboard() {
                 subtitle="Confirmed bookings"
                 icon={CheckCircle}
                 variant="success"
+                active={activeFilter === 'approved'}
+                onClick={() => setActiveFilter(activeFilter === 'approved' ? null : 'approved')}
               />
               <StatCard
                 title="Pending"
@@ -196,18 +201,26 @@ export default function Dashboard() {
                 subtitle="Awaiting approval"
                 icon={Clock}
                 variant="warning"
+                active={activeFilter === 'pending'}
+                onClick={() => setActiveFilter(activeFilter === 'pending' ? null : 'pending')}
               />
               <StatCard
                 title="Rejected"
                 value={rejectedCount}
                 subtitle="Declined requests"
                 icon={XCircle}
+                active={activeFilter === 'rejected'}
+                onClick={() => setActiveFilter(activeFilter === 'rejected' ? null : 'rejected')}
               />
             </div>
 
-            {/* Calendar Full Width */}
+            {/* Filtered Bookings Calendar */}
             <GoogleCalendarView 
-              bookings={allBookings} 
+              bookings={(() => {
+                const base = isAdmin ? allBookings : userBookings;
+                if (!activeFilter || activeFilter === 'all') return allBookings;
+                return base.filter(b => b.status === activeFilter);
+              })()}
               halls={filteredHalls} 
               profiles={profiles}
               sections={sections}
