@@ -11,16 +11,11 @@ interface StatCardProps {
     isPositive: boolean;
   };
   variant?: 'default' | 'primary' | 'success' | 'warning';
+  onClick?: () => void;
+  active?: boolean;
 }
 
-export function StatCard({ title, value, subtitle, icon: Icon, trend, variant = 'default' }: StatCardProps) {
-  const variants = {
-    default: 'bg-card',
-    primary: 'bg-primary/5 border-primary/20',
-    success: 'bg-success/5 border-success/20',
-    warning: 'bg-warning/5 border-warning/20',
-  };
-
+export function StatCard({ title, value, subtitle, icon: Icon, trend, variant = 'default', onClick, active }: StatCardProps) {
   const iconVariants = {
     default: 'bg-secondary text-secondary-foreground',
     primary: 'bg-primary text-primary-foreground',
@@ -29,10 +24,13 @@ export function StatCard({ title, value, subtitle, icon: Icon, trend, variant = 
   };
 
   return (
-    <div className={cn(
-      "rounded-xl border p-6 shadow-soft transition-all duration-200 hover:shadow-card",
-      variants[variant]
-    )}>
+    <div
+      onClick={onClick}
+      className={cn(
+        "rounded-xl border p-6 shadow-soft transition-all duration-200 hover:shadow-card bg-card cursor-pointer",
+        active && "ring-2 ring-primary border-primary"
+      )}
+    >
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
