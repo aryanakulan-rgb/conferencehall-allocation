@@ -24,6 +24,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'approved' | 'pending' | 'rejected' | null>(null);
   
   const { data: halls = [], isLoading: hallsLoading } = useHalls();
   const { data: allBookings = [], isLoading: allBookingsLoading } = useBookings();
