@@ -202,7 +202,7 @@ export default function Dashboard() {
                 icon={Clock}
                 variant="warning"
                 active={activeFilter === 'pending'}
-                onClick={() => setActiveFilter(activeFilter === 'pending' ? null : 'pending')}
+                onClick={() => navigate('/my-bookings?tab=pending')}
               />
               <StatCard
                 title="Rejected"
@@ -210,7 +210,7 @@ export default function Dashboard() {
                 subtitle="Declined requests"
                 icon={XCircle}
                 active={activeFilter === 'rejected'}
-                onClick={() => setActiveFilter(activeFilter === 'rejected' ? null : 'rejected')}
+                onClick={() => navigate('/my-bookings?tab=rejected')}
               />
             </div>
 
