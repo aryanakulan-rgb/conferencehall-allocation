@@ -210,7 +210,7 @@ export default function Dashboard() {
                 subtitle="Declined requests"
                 icon={XCircle}
                 active={activeFilter === 'rejected'}
-                onClick={() => setActiveFilter(activeFilter === 'rejected' ? null : 'rejected')}
+                onClick={() => navigate('/my-bookings?tab=rejected')}
               />
             </div>
 
