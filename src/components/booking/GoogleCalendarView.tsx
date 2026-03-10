@@ -71,7 +71,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   const getStatusColor = (status: string, bookingDate?: string) => {
     // Show past-date bookings in gray regardless of status
     if (bookingDate && isBefore(startOfDay(new Date(bookingDate)), startOfDay(new Date()))) {
-      return 'bg-gray-400 text-gray-600';
+      return 'bg-[#b0b0b0] text-[#6b6b6b]';
     }
     switch (status) {
       case 'approved':
