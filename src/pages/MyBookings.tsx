@@ -190,10 +190,13 @@ export default function MyBookings() {
           </Button>
         </div>
 
-        <Tabs defaultValue="all" className="space-y-6">
+        <Tabs defaultValue={defaultTab} className="space-y-6">
           <TabsList>
             <TabsTrigger value="all">
               All ({bookings.length})
+            </TabsTrigger>
+            <TabsTrigger value="approved">
+              Approved ({filterBookings('approved').length})
             </TabsTrigger>
             <TabsTrigger value="pending">
               Booked ({filterBookings('pending').length})
@@ -203,7 +206,7 @@ export default function MyBookings() {
             </TabsTrigger>
           </TabsList>
 
-          {(['all', 'pending', 'rejected'] as const).map((status) => (
+          {(['all', 'approved', 'pending', 'rejected'] as const).map((status) => (
             <TabsContent key={status} value={status}>
               {filterBookings(status).length === 0 ? (
                 <div className="text-center py-12 rounded-xl border bg-card">
