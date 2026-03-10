@@ -147,7 +147,7 @@ export default function BookRoom() {
           </>
         ) : (
           /* Booking Form */
-          <div className="max-w-lg">
+          <div className="max-w-lg mx-auto">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
