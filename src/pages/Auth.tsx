@@ -320,7 +320,7 @@ export default function Auth() {
                     <SelectContent className="bg-popover z-50">
                       {sections?.map((section) => (
                         <SelectItem key={section.id} value={section.id}>
-                          {section.name} ({section.code})
+                          {section.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
