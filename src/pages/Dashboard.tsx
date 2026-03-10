@@ -193,7 +193,7 @@ export default function Dashboard() {
                 icon={CheckCircle}
                 variant="success"
                 active={activeFilter === 'approved'}
-                onClick={() => setActiveFilter(activeFilter === 'approved' ? null : 'approved')}
+                onClick={() => navigate('/my-bookings?tab=approved')}
               />
               <StatCard
                 title="Pending"

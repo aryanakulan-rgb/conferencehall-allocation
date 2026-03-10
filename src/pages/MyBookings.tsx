@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { BookingStatusBadge } from '@/components/dashboard/BookingStatusBadge';
 import { EditBookingDialog } from '@/components/booking/EditBookingDialog';
