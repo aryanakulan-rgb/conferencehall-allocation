@@ -26,6 +26,8 @@ import { formatTimeRange12Hour } from '@/lib/timeUtils';
 
 export default function MyBookings() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'all';
   const navigate = useNavigate();
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
