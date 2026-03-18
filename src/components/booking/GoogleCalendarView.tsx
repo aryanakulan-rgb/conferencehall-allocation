@@ -282,8 +282,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                       )}
                       title={`${booking.purpose} - ${bookerInfo}${sectionName ? ` (${sectionName})` : ''} | ${formatTimeRange12Hour(booking.start_time, booking.end_time)}`}
                     >
-                      <span className="hidden sm:inline">{formatTimeRange12Hour(booking.start_time, booking.end_time)} </span>
-                      <span className="truncate">{bookerInfo}</span>
+                      <span className="truncate">{formatTimeRange12Hour(booking.start_time, booking.end_time)} - {bookerInfo}</span>
                     </div>
                   );
                 })}
