@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRight, Mail, Lock } from 'lucide-react';
+import { ArrowRight, Mail, Lock, User } from 'lucide-react';
 import dicKeralaEmblem from '@/assets/dic-kerala-emblem.png';
 import { toast } from 'sonner';
 import { z } from 'zod';
