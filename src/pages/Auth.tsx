@@ -91,6 +91,12 @@ export default function Auth() {
           newErrors.name = e.errors[0].message;
         }
       }
+
+      if (!username.trim()) {
+        newErrors.username = 'Please enter a username';
+      } else if (username.trim().length < 3) {
+        newErrors.username = 'Username must be at least 3 characters';
+      }
     }
 
     setErrors(newErrors);
