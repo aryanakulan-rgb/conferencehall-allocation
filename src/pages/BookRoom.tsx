@@ -199,7 +199,7 @@ function HallSelectionCard({ hall, isSelected, onSelect }: HallSelectionCardProp
               {hall.description || 'Conference room for meetings and events'}
             </CardDescription>
           </div>
-          <Badge variant={hall.type === 'conference' ? 'default' : 'secondary'}>
+          <Badge variant="default">
             {hall.type === 'conference' ? 'Main' : 'Mini'}
           </Badge>
         </div>

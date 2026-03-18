@@ -180,7 +180,7 @@ export default function HallManagement() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={hall.type === 'conference' ? 'default' : 'outline'}>
+                      <Badge variant="default">
                         {hall.type === 'conference' ? 'Conference' : 'Mini'}
                       </Badge>
                     </TableCell>
