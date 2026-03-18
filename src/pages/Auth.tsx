@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { useSections } from '@/hooks/useSections';
 
-const emailSchema = z.string().email('Please enter a valid email address');
+const loginIdentifierSchema = z.string().min(1, 'Please enter your username or email');
 const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
 const sectionSchema = z.string().min(1, 'Please select a section');
 
