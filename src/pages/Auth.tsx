@@ -37,7 +37,7 @@ export default function Auth() {
     e.preventDefault();
     
     try {
-      emailSchema.parse(email);
+      z.string().email('Please enter a valid email address').parse(email);
     } catch (err) {
       if (err instanceof z.ZodError) {
         setErrors({ email: err.errors[0].message });
