@@ -30,7 +30,7 @@ export default function Auth() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; name?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; name?: string; username?: string }>({});
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
