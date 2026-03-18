@@ -50,7 +50,7 @@ export function HallCard({ hall, onBook, showBookButton = true }: HallCardProps)
         <span className="text-muted-foreground">people capacity</span>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-6">
         {hall.facilities.slice(0, 4).map((facility) => {
           const Icon = facilityIcons[facility] || Monitor;
           return (
