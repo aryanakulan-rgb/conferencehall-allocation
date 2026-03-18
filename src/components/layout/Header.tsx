@@ -31,7 +31,7 @@ export function Header() {
         </div>
 
         {user && (
-          <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
             <div className="hidden sm:flex items-center gap-2 text-sm">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary">
                 <User className="h-4 w-4 text-secondary-foreground" />
@@ -43,7 +43,7 @@ export function Header() {
                 </p>
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5">
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5 ml-2">
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Logout</span>
             </Button>
