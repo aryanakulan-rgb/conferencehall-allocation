@@ -31,8 +31,8 @@ export function HallCard({ hall, onBook, showBookButton = true }: HallCardProps)
               <Badge variant="secondary" className="text-xs">Inactive</Badge>
             )}
           </div>
-          <Badge variant={hall.type === 'conference' ? 'default' : 'outline'} className="capitalize">
-            {hall.type === 'conference' ? 'Conference Hall' : 'Mini Hall'}
+          <Badge variant="default" className="capitalize">
+            {hall.type === 'conference' ? 'Main' : 'Mini'}
           </Badge>
         </div>
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
