@@ -125,7 +125,7 @@ export function BookingCalendar({ bookings, halls }: BookingCalendarProps) {
             {displayHalls.map((hall) => (
               <div key={hall.id} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Badge variant={hall.type === 'conference' ? 'default' : 'secondary'} className="text-xs">
+                  <Badge variant="default" className="text-xs">
                     {hall.name}
                   </Badge>
                   <span className="text-xs text-muted-foreground">({hall.capacity} capacity)</span>
