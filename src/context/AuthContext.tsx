@@ -19,7 +19,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ error: string | null }>;
-  signup: (email: string, password: string, name: string) => Promise<{ error: string | null }>;
+  signup: (email: string, password: string, name: string, username: string) => Promise<{ error: string | null }>;
   logout: () => Promise<void>;
 }
 
@@ -108,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null };
   };
 
-  const signup = async (email: string, password: string, sectionId: string): Promise<{ error: string | null }> => {
+  const signup = async (email: string, password: string, sectionId: string, username: string): Promise<{ error: string | null }> => {
     const redirectUrl = `${window.location.origin}/`;
 
     const { error } = await supabase.auth.signUp({
@@ -117,8 +117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       options: {
         emailRedirectTo: redirectUrl,
         data: {
-          name: email, // Use email as name, section is linked via section_id
+          name: email,
           section_id: sectionId,
+          username: username,
         },
       },
     });

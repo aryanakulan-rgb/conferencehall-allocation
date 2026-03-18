@@ -26,10 +26,11 @@ export default function Auth() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; name?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; name?: string; username?: string }>({});
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,6 +91,12 @@ export default function Auth() {
           newErrors.name = e.errors[0].message;
         }
       }
+
+      if (!username.trim()) {
+        newErrors.username = 'Please enter a username';
+      } else if (username.trim().length < 3) {
+        newErrors.username = 'Username must be at least 3 characters';
+      }
     }
 
     setErrors(newErrors);
@@ -120,7 +127,7 @@ export default function Auth() {
     
     setIsSubmitting(true);
 
-    const { error } = await signup(email, password, name);
+    const { error } = await signup(email, password, name, username.trim());
     
     if (error) {
       toast.error(error);
@@ -311,6 +318,21 @@ export default function Auth() {
 
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="signup-username">Username</Label>
+                  <div className="relative">
+                    <Input
+                      id="signup-username"
+                      type="text"
+                      placeholder="Enter a username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="signup-section">Section</Label>
                   <Select value={name} onValueChange={setName}>

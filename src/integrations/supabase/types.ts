@@ -135,6 +135,7 @@ export type Database = {
           name: string
           section_id: string | null
           updated_at: string
+          username: string | null
         }
         Insert: {
           created_at?: string
@@ -143,6 +144,7 @@ export type Database = {
           name: string
           section_id?: string | null
           updated_at?: string
+          username?: string | null
         }
         Update: {
           created_at?: string
@@ -151,6 +153,7 @@ export type Database = {
           name?: string
           section_id?: string | null
           updated_at?: string
+          username?: string | null
         }
         Relationships: [
           {
