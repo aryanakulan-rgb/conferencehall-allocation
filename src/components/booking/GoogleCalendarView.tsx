@@ -277,7 +277,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                     <div
                       key={booking.id}
                       className={cn(
-                        "text-sm px-1.5 py-0.5 rounded truncate font-medium",
+                        "text-xs px-1.5 py-0.5 rounded truncate font-medium",
                         getStatusColor(booking.status, booking.date)
                       )}
                       title={`${booking.purpose} - ${bookerInfo}${sectionName ? ` (${sectionName})` : ''} | ${formatTimeRange12Hour(booking.start_time, booking.end_time)}`}
