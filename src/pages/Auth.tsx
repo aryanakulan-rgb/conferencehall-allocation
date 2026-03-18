@@ -86,6 +86,14 @@ export default function Auth() {
       }
     }
 
+    try {
+      passwordSchema.parse(password);
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        newErrors.password = e.errors[0].message;
+      }
+    }
+
     if (activeTab === 'signup') {
       try {
         sectionSchema.parse(name);
