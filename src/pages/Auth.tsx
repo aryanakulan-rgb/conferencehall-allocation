@@ -127,7 +127,7 @@ export default function Auth() {
     
     setIsSubmitting(true);
 
-    const { error } = await signup(email, password, name);
+    const { error } = await signup(email, password, name, username.trim());
     
     if (error) {
       toast.error(error);
