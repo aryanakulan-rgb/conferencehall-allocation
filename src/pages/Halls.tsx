@@ -134,7 +134,7 @@ export default function Halls() {
             <p className="text-muted-foreground">Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {[...filteredHalls].sort((a, b) => {
               if (a.type === 'mini' && b.type !== 'mini') return -1;
               if (a.type !== 'mini' && b.type === 'mini') return 1;

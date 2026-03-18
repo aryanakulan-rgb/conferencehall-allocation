@@ -20,7 +20,7 @@ const facilityIcons: Record<string, React.ComponentType<{ className?: string }>>
 export function HallCard({ hall, onBook, showBookButton = true }: HallCardProps) {
   return (
     <div className={cn(
-      "group rounded-xl border bg-card p-6 shadow-soft transition-all duration-300 hover:shadow-card",
+      "group rounded-xl border bg-card p-6 pb-8 shadow-soft transition-all duration-300 hover:shadow-card flex flex-col",
       !hall.is_active && "opacity-60"
     )}>
       <div className="flex items-start justify-between mb-4">
@@ -50,7 +50,7 @@ export function HallCard({ hall, onBook, showBookButton = true }: HallCardProps)
         <span className="text-muted-foreground">people capacity</span>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-6">
         {hall.facilities.slice(0, 4).map((facility) => {
           const Icon = facilityIcons[facility] || Monitor;
           return (
