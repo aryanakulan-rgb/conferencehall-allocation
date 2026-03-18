@@ -271,7 +271,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                   const sectionName = profile?.section_id 
                     ? sections.find(s => s.id === profile.section_id)?.name 
                     : null;
-                  const bookerInfo = profile?.name || 'Unknown';
+                  const bookerInfo = sectionName || profile?.name || 'Unknown';
                   
                   return (
                     <div
