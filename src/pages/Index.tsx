@@ -73,7 +73,7 @@ const Index = () => {
 
             {/* Right Content - CTA Card */}
             <div className="lg:pl-12 lg:pt-16 animate-slide-up">
-              <div className="bg-card rounded-2xl shadow-elevated p-10 max-w-lg mx-auto">
+              <div className="bg-card rounded-2xl shadow-elevated p-10 max-w-md mx-auto">
                 <div className="text-center mb-8">
                   <h3 className="text-2xl font-semibold text-foreground">Get Started</h3>
                   <p className="text-muted-foreground mt-1">Login or create an account to book halls</p>
