@@ -23,8 +23,8 @@ export default function Auth() {
   const { login, signup, isAuthenticated, isLoading } = useAuth();
   const { data: sections } = useSections();
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
+  const [loginIdentifier, setLoginIdentifier] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
