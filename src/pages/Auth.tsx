@@ -67,19 +67,21 @@ export default function Auth() {
   const validateForm = () => {
     const newErrors: typeof errors = {};
     
-    try {
-      emailSchema.parse(email);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        newErrors.email = e.errors[0].message;
+    if (activeTab === 'login') {
+      try {
+        loginIdentifierSchema.parse(loginIdentifier);
+      } catch (e) {
+        if (e instanceof z.ZodError) {
+          newErrors.email = e.errors[0].message;
+        }
       }
-    }
-
-    try {
-      passwordSchema.parse(password);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        newErrors.password = e.errors[0].message;
+    } else {
+      try {
+        z.string().email('Please enter a valid email address').parse(email);
+      } catch (e) {
+        if (e instanceof z.ZodError) {
+          newErrors.email = e.errors[0].message;
+        }
       }
     }
 
