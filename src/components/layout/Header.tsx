@@ -25,7 +25,7 @@ export function Header() {
           {user && <MobileSidebar />}
           <img src={dicLogo} alt="DI&C Logo" className="h-10 w-10 rounded-lg object-contain" />
           <div>
-            <h1 className="text-lg font-semibold text-foreground">DIC Hall Booking</h1>
+            <h1 className="text-lg font-semibold text-foreground">DI&C Hall Booking</h1>
             <p className="text-xs text-muted-foreground">Directorate of Industries & Commerce</p>
           </div>
         </div>

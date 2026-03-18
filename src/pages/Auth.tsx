@@ -199,7 +199,7 @@ export default function Auth() {
             <img src={dicKeralaEmblem} alt="DI&C Kerala Emblem" className="h-12 w-12 object-contain" />
           </div>
           <div className="text-left">
-            <h2 className="text-lg font-semibold text-foreground">DIC Hall Booking</h2>
+            <h2 className="text-lg font-semibold text-foreground">DI&C Hall Booking</h2>
             <p className="text-sm text-muted-foreground">Conference Hall Booking System</p>
           </div>
         </div>
