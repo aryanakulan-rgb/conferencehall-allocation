@@ -319,6 +319,21 @@ export default function Auth() {
             <TabsContent value="signup">
               <form onSubmit={handleSignup} className="space-y-4">
                 <div className="space-y-2">
+                  <Label htmlFor="signup-username">Username</Label>
+                  <div className="relative">
+                    <Input
+                      id="signup-username"
+                      type="text"
+                      placeholder="Enter a username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="signup-section">Section</Label>
                   <Select value={name} onValueChange={setName}>
                     <SelectTrigger className="w-full">
