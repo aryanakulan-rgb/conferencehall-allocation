@@ -111,7 +111,25 @@ export default function Auth() {
     
     setIsSubmitting(true);
 
-    const { error } = await login(email, password);
+    let loginEmail = loginIdentifier;
+    
+    // If it doesn't look like an email, look up by username
+    if (!loginIdentifier.includes('@')) {
+      const { data, error: lookupError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('username', loginIdentifier)
+        .maybeSingle();
+      
+      if (lookupError || !data) {
+        toast.error('Username not found');
+        setIsSubmitting(false);
+        return;
+      }
+      loginEmail = data.email;
+    }
+
+    const { error } = await login(loginEmail, password);
     
     if (error) {
       toast.error(error);
