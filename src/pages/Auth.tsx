@@ -8,13 +8,13 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRight, Mail, Lock } from 'lucide-react';
+import { ArrowRight, Mail, Lock, User } from 'lucide-react';
 import dicKeralaEmblem from '@/assets/dic-kerala-emblem.png';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { useSections } from '@/hooks/useSections';
 
-const emailSchema = z.string().email('Please enter a valid email address');
+const loginIdentifierSchema = z.string().min(1, 'Please enter your username or email');
 const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
 const sectionSchema = z.string().min(1, 'Please select a section');
 
@@ -23,6 +23,7 @@ export default function Auth() {
   const { login, signup, isAuthenticated, isLoading } = useAuth();
   const { data: sections } = useSections();
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
+  const [loginIdentifier, setLoginIdentifier] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -36,7 +37,7 @@ export default function Auth() {
     e.preventDefault();
     
     try {
-      emailSchema.parse(email);
+      z.string().email('Please enter a valid email address').parse(email);
     } catch (err) {
       if (err instanceof z.ZodError) {
         setErrors({ email: err.errors[0].message });
@@ -67,11 +68,21 @@ export default function Auth() {
   const validateForm = () => {
     const newErrors: typeof errors = {};
     
-    try {
-      emailSchema.parse(email);
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        newErrors.email = e.errors[0].message;
+    if (activeTab === 'login') {
+      try {
+        loginIdentifierSchema.parse(loginIdentifier);
+      } catch (e) {
+        if (e instanceof z.ZodError) {
+          newErrors.email = e.errors[0].message;
+        }
+      }
+    } else {
+      try {
+        z.string().email('Please enter a valid email address').parse(email);
+      } catch (e) {
+        if (e instanceof z.ZodError) {
+          newErrors.email = e.errors[0].message;
+        }
       }
     }
 
@@ -109,7 +120,25 @@ export default function Auth() {
     
     setIsSubmitting(true);
 
-    const { error } = await login(email, password);
+    let loginEmail = loginIdentifier;
+    
+    // If it doesn't look like an email, look up by username
+    if (!loginIdentifier.includes('@')) {
+      const { data, error: lookupError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('username', loginIdentifier)
+        .maybeSingle();
+      
+      if (lookupError || !data) {
+        toast.error('Username not found');
+        setIsSubmitting(false);
+        return;
+      }
+      loginEmail = data.email;
+    }
+
+    const { error } = await login(loginEmail, password);
     
     if (error) {
       toast.error(error);
@@ -229,15 +258,15 @@ export default function Auth() {
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-email">Email Address</Label>
+                  <Label htmlFor="login-identifier">Username or Email</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      id="login-email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="login-identifier"
+                      type="text"
+                      placeholder="Enter username or email"
+                      value={loginIdentifier}
+                      onChange={(e) => setLoginIdentifier(e.target.value)}
                       className="pl-10"
                       required
                     />
