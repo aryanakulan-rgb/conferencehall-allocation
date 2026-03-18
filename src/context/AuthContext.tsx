@@ -19,7 +19,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ error: string | null }>;
-  signup: (email: string, password: string, name: string) => Promise<{ error: string | null }>;
+  signup: (email: string, password: string, name: string, username: string) => Promise<{ error: string | null }>;
   logout: () => Promise<void>;
 }
 
