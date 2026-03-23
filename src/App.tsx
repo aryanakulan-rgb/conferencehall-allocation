@@ -15,6 +15,7 @@ import AdminBookings from "./pages/AdminBookings";
 import AdminCalendar from "./pages/AdminCalendar";
 import BookRoom from "./pages/BookRoom";
 import TodaysBookings from "./pages/TodaysBookings";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <Dashboard />
