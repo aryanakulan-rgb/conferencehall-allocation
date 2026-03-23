@@ -15,6 +15,7 @@ import AdminBookings from "./pages/AdminBookings";
 import AdminCalendar from "./pages/AdminCalendar";
 import BookRoom from "./pages/BookRoom";
 import TodaysBookings from "./pages/TodaysBookings";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
