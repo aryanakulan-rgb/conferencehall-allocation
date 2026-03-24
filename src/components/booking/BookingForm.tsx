@@ -228,7 +228,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
             id="meetingLink"
             value={meetingLink}
             onChange={(e) => setMeetingLink(e.target.value)}
-            placeholder="https://meet.google.com/..."
+            placeholder="Paste Google Meet or Zoom link here"
             className="pl-10"
             maxLength={500}
           />
