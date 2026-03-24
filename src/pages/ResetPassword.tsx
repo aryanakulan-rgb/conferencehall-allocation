@@ -149,6 +149,7 @@ export default function ResetPassword() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10"
+                  autoComplete="new-password"
                   required
                 />
               </div>
@@ -165,6 +166,7 @@ export default function ResetPassword() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="pl-10"
+                  autoComplete="new-password"
                   required
                 />
               </div>
