@@ -182,11 +182,6 @@ export default function ResetPassword() {
           </form>
         </div>
 
-        <p className="text-center mt-6">
-          <Button variant="link" onClick={() => navigate('/auth')}>
-            ← Back to Login
-          </Button>
-        </p>
       </div>
     </div>
   );
