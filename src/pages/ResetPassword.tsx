@@ -65,9 +65,9 @@ export default function ResetPassword() {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success('Password updated successfully! Redirecting to login...');
+      toast.success('Password updated successfully! Redirecting to home...');
       await supabase.auth.signOut();
-      setTimeout(() => navigate('/auth', { replace: true }), 2000);
+      setTimeout(() => navigate('/', { replace: true }), 2000);
     }
 
     setIsSubmitting(false);

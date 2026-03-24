@@ -10,8 +10,16 @@ const Index = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated && !isLoading) {
+    // Don't redirect if user arrived via password recovery link
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const isRecovery = hashParams.get('type') === 'recovery';
+    
+    if (isAuthenticated && !isLoading && !isRecovery) {
       navigate('/dashboard', { replace: true });
+    }
+    
+    if (isRecovery) {
+      navigate('/reset-password', { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate]);
 
