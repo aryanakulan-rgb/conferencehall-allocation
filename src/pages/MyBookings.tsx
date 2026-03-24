@@ -219,7 +219,7 @@ export default function MyBookings() {
                     }
                   </p>
                   {status === 'all' && (
-                    <Button variant="accent" onClick={() => navigate('/halls')}>
+                    <Button variant="accent" onClick={() => navigate('/book-room')}>
                       Book a Hall
                     </Button>
                   )}
