@@ -42,6 +42,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
   const [purpose, setPurpose] = useState('');
   const [meetingLink, setMeetingLink] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [conflictStatus, setConflictStatus] = useState<'idle' | 'checking' | 'conflict' | 'available'>('idle');
   const [conflictMessage, setConflictMessage] = useState('');
 
