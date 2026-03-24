@@ -150,7 +150,7 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
 
       <div className="space-y-2">
         <Label>Date *</Label>
-        <Popover>
+        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -167,7 +167,10 @@ export function BookingForm({ halls, selectedHall, preselectedDate, onSubmit, on
             <Calendar
               mode="single"
               selected={date}
-              onSelect={setDate}
+              onSelect={(d) => {
+                setDate(d);
+                setCalendarOpen(false);
+              }}
               disabled={(date) => {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
