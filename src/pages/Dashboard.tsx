@@ -125,7 +125,7 @@ export default function Dashboard() {
             </p>
           </div>
           {!isAdmin && (
-            <Button variant="accent" onClick={() => navigate('/halls')}>
+            <Button variant="accent" onClick={() => navigate('/book-room')}>
               <Calendar className="mr-2 h-4 w-4" />
               Book a Hall
             </Button>
