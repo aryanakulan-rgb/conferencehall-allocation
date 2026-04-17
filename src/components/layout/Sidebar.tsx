@@ -29,7 +29,7 @@ const navItems: NavItem[] = [
   { title: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'user'] },
   { title: "Today's Bookings", href: '/todays-bookings', icon: CalendarCheck, roles: ['admin', 'user'] },
   { title: 'Booking Calendar', href: '/admin-calendar', icon: Calendar, roles: ['admin'] },
-  { title: 'Book Room', href: '/book-room', icon: CalendarPlus, roles: ['user'] },
+  { title: 'Book a Hall', href: '/book-room', icon: CalendarPlus, roles: ['user'] },
   { title: 'My Bookings', href: '/my-bookings', icon: ClipboardList, roles: ['user'] },
   { title: 'All Bookings', href: '/bookings', icon: ClipboardList, roles: ['admin'] },
   { title: 'All Bookings', href: '/all-bookings', icon: ClipboardList, roles: ['user'] },
