@@ -15,6 +15,7 @@ import AdminBookings from "./pages/AdminBookings";
 import AdminCalendar from "./pages/AdminCalendar";
 import BookRoom from "./pages/BookRoom";
 import TodaysBookings from "./pages/TodaysBookings";
+import AllBookings from "./pages/AllBookings";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
@@ -66,6 +67,11 @@ function AppRoutes() {
       <Route path="/calendar" element={
         <ProtectedRoute>
           <CalendarPage />
+        </ProtectedRoute>
+      } />
+      <Route path="/all-bookings" element={
+        <ProtectedRoute>
+          <AllBookings />
         </ProtectedRoute>
       } />
       <Route path="/my-bookings" element={
