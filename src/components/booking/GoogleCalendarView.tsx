@@ -87,7 +87,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
 
   const canDeleteBooking = (booking: Booking) => {
     if (isAdmin) return true;
-    return booking.user_id === user?.id && booking.status === 'pending';
+    return booking.user_id === user?.id && (booking.status === 'pending' || booking.status === 'approved');
   };
 
   const canEditBooking = (booking: Booking) => {
