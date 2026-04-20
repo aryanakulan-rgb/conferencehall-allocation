@@ -126,17 +126,19 @@ export default function MyBookings() {
           Requested on {format(new Date(booking.created_at), 'MMM d, yyyy')}
         </span>
         
-        {booking.status === 'pending' && (
+        {(booking.status === 'pending' || booking.status === 'approved') && (
           <div className="flex items-center justify-end gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary hover:text-primary hover:bg-primary/10"
-              onClick={() => handleEditClick(booking)}
-            >
-              <Pencil className="h-4 w-4 mr-1" />
-              Edit
-            </Button>
+            {booking.status === 'pending' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-primary hover:text-primary hover:bg-primary/10"
+                onClick={() => handleEditClick(booking)}
+              >
+                <Pencil className="h-4 w-4 mr-1" />
+                Edit
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
