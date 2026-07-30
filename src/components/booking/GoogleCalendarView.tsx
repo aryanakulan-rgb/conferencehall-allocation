@@ -333,6 +333,15 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
           <span className="h-3 w-3 rounded bg-muted" />
           <span className="text-muted-foreground">Elapsed</span>
         </div>
+        <div className="flex items-center gap-1.5">
+          <span className="h-3 w-1.5 rounded bg-sky" />
+          <span className="text-muted-foreground">Main Conference Hall</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="h-3 w-1.5 rounded bg-accent" />
+          <span className="text-muted-foreground">Mini Conference Hall</span>
+        </div>
+
       </div>
 
       {/* Booking Details Dialog */}
