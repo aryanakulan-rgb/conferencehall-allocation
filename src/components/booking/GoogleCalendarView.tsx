@@ -15,7 +15,7 @@ import {
   isBefore,
   startOfDay
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2, Pencil, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2, Pencil, Plus, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
