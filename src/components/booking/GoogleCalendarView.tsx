@@ -389,7 +389,12 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                   <div className="space-y-1.5 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1.5">
                       <MapPin className="h-3.5 w-3.5" />
-                      {getHallName(booking.hall_id)}
+                      <span className={cn(
+                        "px-2 py-0.5 rounded text-xs font-semibold",
+                        getHallColor(booking.hall_id)
+                      )}>
+                        {getHallName(booking.hall_id)}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Clock className="h-3.5 w-3.5" />
