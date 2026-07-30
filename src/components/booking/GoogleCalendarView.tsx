@@ -15,7 +15,7 @@ import {
   isBefore,
   startOfDay
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2, Pencil, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock, MapPin, Trash2, User, Building2, Pencil, Plus, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
@@ -44,6 +44,8 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   const [selectedHallId, setSelectedHallId] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   
   const activeHalls = halls.filter(h => h.is_active);
   const isAdmin = user?.role === 'admin';
@@ -100,6 +102,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   const handleEditClick = (booking: Booking) => {
     if (onEditBooking) {
       setDialogOpen(false);
+      setBookingDialogOpen(false);
       onEditBooking(booking);
     }
   };
@@ -151,6 +154,12 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
       // Navigate to book room for future dates (users only)
       navigate(`/book-room?date=${format(date, 'yyyy-MM-dd')}`);
     }
+  };
+
+  const handleBookingClick = (e: React.MouseEvent, booking: Booking) => {
+    e.stopPropagation();
+    setSelectedBooking(booking);
+    setBookingDialogOpen(true);
   };
 
   const handleBookFromDialog = () => {
@@ -289,8 +298,9 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                   return (
                     <div
                       key={booking.id}
+                      onClick={(e) => handleBookingClick(e, booking)}
                       className={cn(
-                        "text-xs px-1.5 py-0.5 rounded truncate font-medium flex items-center gap-1 border-l-4",
+                        "text-xs px-1.5 py-0.5 rounded truncate font-medium flex items-center gap-1 border-l-4 cursor-pointer",
                         isMain ? "border-sky" : "border-accent",
                         getStatusColor(booking.status, booking.date)
                       )}
@@ -452,6 +462,113 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
               <Plus className="h-4 w-4 mr-2" />
               Book This Date
             </Button>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Single Booking Details Dialog */}
+      <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg">
+              {selectedBooking && format(new Date(selectedBooking.date), 'EEEE, MMMM d, yyyy')}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedBooking && (
+            <div className="space-y-4">
+              <div className="flex items-start justify-between">
+                <p className="font-medium text-foreground text-lg">
+                  {selectedBooking.purpose}
+                </p>
+                <BookingStatusBadge status={selectedBooking.status} size="sm" />
+              </div>
+
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 shrink-0" />
+                  <span className={cn(
+                    "px-2 py-0.5 rounded text-xs font-semibold",
+                    getHallColor(selectedBooking.hall_id)
+                  )}>
+                    {getHallName(selectedBooking.hall_id)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 shrink-0" />
+                  {formatTimeRange12Hour(selectedBooking.start_time, selectedBooking.end_time)}
+                </div>
+                {(() => {
+                  const profile = getProfileByUserId(selectedBooking.user_id);
+                  const sectionName = getSectionName(profile?.section_id);
+                  return (
+                    <>
+                      {profile && (
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 shrink-0" />
+                          {profile.name}
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 shrink-0" />
+                        {sectionName}
+                      </div>
+                    </>
+                  );
+                })()}
+                {selectedBooking.remarks && (
+                  <div className="pt-2 border-t border-border">
+                    <div className="flex items-start gap-2">
+                      <FileText className="h-4 w-4 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-medium text-foreground mb-1">Description / Remarks</p>
+                        <p className="text-sm text-muted-foreground">{selectedBooking.remarks}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                {canEditBooking(selectedBooking) && onEditBooking && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1"
+                    onClick={() => handleEditClick(selectedBooking)}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    Edit
+                  </Button>
+                )}
+                {canDeleteBooking(selectedBooking) && onDeleteBooking && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="sm" className="gap-1">
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Booking</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this booking? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => handleDelete(selectedBooking.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
+            </div>
           )}
         </DialogContent>
       </Dialog>
