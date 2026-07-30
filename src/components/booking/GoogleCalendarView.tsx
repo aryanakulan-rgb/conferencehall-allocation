@@ -297,8 +297,9 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                   return (
                     <div
                       key={booking.id}
+                      onClick={(e) => handleBookingClick(e, booking)}
                       className={cn(
-                        "text-xs px-1.5 py-0.5 rounded truncate font-medium flex items-center gap-1 border-l-4",
+                        "text-xs px-1.5 py-0.5 rounded truncate font-medium flex items-center gap-1 border-l-4 cursor-pointer",
                         isMain ? "border-sky" : "border-accent",
                         getStatusColor(booking.status, booking.date)
                       )}
