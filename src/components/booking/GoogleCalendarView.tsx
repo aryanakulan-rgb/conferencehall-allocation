@@ -155,6 +155,12 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
     }
   };
 
+  const handleBookingClick = (e: React.MouseEvent, booking: Booking) => {
+    e.stopPropagation();
+    setSelectedBooking(booking);
+    setBookingDialogOpen(true);
+  };
+
   const handleBookFromDialog = () => {
     if (selectedDate) {
       setDialogOpen(false);
