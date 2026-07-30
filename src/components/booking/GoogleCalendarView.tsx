@@ -44,6 +44,8 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   const [selectedHallId, setSelectedHallId] = useState<string>('all');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   
   const activeHalls = halls.filter(h => h.is_active);
   const isAdmin = user?.role === 'admin';
