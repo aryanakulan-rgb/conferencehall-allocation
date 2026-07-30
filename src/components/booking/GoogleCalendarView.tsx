@@ -63,6 +63,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   const getHallColor = (hallId: string) => {
     const hall = halls.find(h => h.id === hallId);
     if (!hall) return 'bg-primary/80 text-primary-foreground';
+    if (hall.name === 'Main Conference Hall') return 'bg-sky text-sky-foreground';
     return hall.type === 'conference' 
       ? 'bg-primary/80 text-primary-foreground' 
       : 'bg-accent/80 text-accent-foreground';
@@ -125,9 +126,14 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
     return days;
   }, [currentMonth]);
 
+  // Sort bookings by start time ascending
+  const sortBookingsByTime = (bookingsToSort: Booking[]) => {
+    return [...bookingsToSort].sort((a, b) => a.start_time.localeCompare(b.start_time));
+  };
+
   // Get bookings for a specific date
   const getBookingsForDate = (date: Date) => {
-    return filteredBookings.filter(b => isSameDay(new Date(b.date), date));
+    return sortBookingsByTime(filteredBookings.filter(b => isSameDay(new Date(b.date), date)));
   };
 
   const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
