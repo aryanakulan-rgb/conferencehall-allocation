@@ -464,6 +464,113 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Single Booking Details Dialog */}
+      <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg">
+              {selectedBooking && format(new Date(selectedBooking.date), 'EEEE, MMMM d, yyyy')}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedBooking && (
+            <div className="space-y-4">
+              <div className="flex items-start justify-between">
+                <p className="font-medium text-foreground text-lg">
+                  {selectedBooking.purpose}
+                </p>
+                <BookingStatusBadge status={selectedBooking.status} size="sm" />
+              </div>
+
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 shrink-0" />
+                  <span className={cn(
+                    "px-2 py-0.5 rounded text-xs font-semibold",
+                    getHallColor(selectedBooking.hall_id)
+                  )}>
+                    {getHallName(selectedBooking.hall_id)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 shrink-0" />
+                  {formatTimeRange12Hour(selectedBooking.start_time, selectedBooking.end_time)}
+                </div>
+                {(() => {
+                  const profile = getProfileByUserId(selectedBooking.user_id);
+                  const sectionName = getSectionName(profile?.section_id);
+                  return (
+                    <>
+                      {profile && (
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 shrink-0" />
+                          {profile.name}
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 shrink-0" />
+                        {sectionName}
+                      </div>
+                    </>
+                  );
+                })()}
+                {selectedBooking.remarks && (
+                  <div className="pt-2 border-t border-border">
+                    <div className="flex items-start gap-2">
+                      <FileText className="h-4 w-4 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-medium text-foreground mb-1">Description / Remarks</p>
+                        <p className="text-sm text-muted-foreground">{selectedBooking.remarks}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                {canEditBooking(selectedBooking) && onEditBooking && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1"
+                    onClick={() => handleEditClick(selectedBooking)}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    Edit
+                  </Button>
+                )}
+                {canDeleteBooking(selectedBooking) && onDeleteBooking && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" size="sm" className="gap-1">
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Booking</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this booking? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => handleDelete(selectedBooking.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
