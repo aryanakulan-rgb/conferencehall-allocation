@@ -102,6 +102,7 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
   const handleEditClick = (booking: Booking) => {
     if (onEditBooking) {
       setDialogOpen(false);
+      setBookingDialogOpen(false);
       onEditBooking(booking);
     }
   };
