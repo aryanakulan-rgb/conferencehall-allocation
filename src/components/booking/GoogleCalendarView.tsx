@@ -278,20 +278,32 @@ export function GoogleCalendarView({ bookings, halls, profiles = [], sections = 
                     ? sections.find(s => s.id === profile.section_id)?.name 
                     : null;
                   const bookerInfo = sectionName || profile?.name || 'Unknown';
+                  const hallName = getHallName(booking.hall_id);
+                  const hallShort = hallName.toLowerCase().includes('main')
+                    ? 'Main'
+                    : hallName.toLowerCase().includes('mini')
+                      ? 'Mini'
+                      : hallName;
+                  const isMain = hallName.toLowerCase().includes('main');
                   
                   return (
                     <div
                       key={booking.id}
                       className={cn(
-                        "text-xs px-1.5 py-0.5 rounded truncate font-medium",
+                        "text-xs px-1.5 py-0.5 rounded truncate font-medium flex items-center gap-1 border-l-4",
+                        isMain ? "border-sky" : "border-accent",
                         getStatusColor(booking.status, booking.date)
                       )}
-                      title={`${booking.purpose} - ${bookerInfo}${sectionName ? ` (${sectionName})` : ''} | ${formatTimeRange12Hour(booking.start_time, booking.end_time)}`}
+                      title={`${hallName} | ${booking.purpose} - ${bookerInfo} | ${formatTimeRange12Hour(booking.start_time, booking.end_time)}`}
                     >
+                      <span className="shrink-0 rounded px-1 text-[10px] font-bold uppercase bg-background/25">
+                        {hallShort}
+                      </span>
                       <span className="truncate">{formatTimeRange12Hour(booking.start_time, booking.end_time)} - {bookerInfo}</span>
                     </div>
                   );
                 })}
+
                 {hiddenCount > 0 && (
                   <div className="text-xs text-muted-foreground px-1.5 font-medium">
                     +{hiddenCount} more
